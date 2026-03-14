@@ -451,7 +451,7 @@
 <div class="search-wrap">
   <div class="search-inner">
     <span class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
-    <input type="text" id="search-input" placeholder="Search by name or ingredient…" oninput="onSearch(this.value)" autocomplete="off"/>
+    <input type="text" id="search-input" placeholder="Search by name or ingredient…" autocomplete="off"/>
     <button id="search-clear" onclick="clearSearch()">✕</button>
   </div>
 </div>
@@ -694,9 +694,13 @@ function hideLoading() {
 async function loadItems() {
   let { data, error } = await sb.from('menu_items').select('*').order('created_at', { ascending: false });
   if (error) {
-    // Fallback: try without new columns in case migration hasn't run
+    console.error('loadItems error details:', JSON.stringify(error));
+    // Fallback without new columns
     const res = await sb.from('menu_items').select('id,name,category,ingredients,photo_url,notes,media,created_at').order('created_at', { ascending: false });
-    if (res.error) throw res.error;
+    if (res.error) {
+      console.error('loadItems fallback error:', JSON.stringify(res.error));
+      throw res.error;
+    }
     data = res.data;
   }
   if (data) items = data;
@@ -727,15 +731,15 @@ function highlight(text, query) {
 function render() {
   const grid         = document.getElementById('cards-grid');
   const resultsLabel = document.getElementById('search-results-label');
-  const q            = searchQuery.toLowerCase().trim();
+  const q = searchQuery.trim();
   const sortOrder    = document.getElementById('sort-select').value;
   const showCat      = activeTab === 'all';
 
   let filtered = activeTab === 'all' ? [...items] : items.filter(i => i.category === activeTab);
   if (q) filtered = filtered.filter(i =>
-    (i.name||'').toLowerCase().includes(q) ||
+    (i.name||'').toLowerCase().includes(q.toLowerCase()) ||
     (i.name_zh||'').includes(q) ||
-    (i.ingredients||[]).some(ing => ing.toLowerCase().includes(q)) ||
+    (i.ingredients||[]).some(ing => ing.toLowerCase().includes(q.toLowerCase())) ||
     (i.ingredients_zh||[]).some(ing => ing.includes(q))
   );
 
@@ -1087,6 +1091,13 @@ function openDetailPage(id) {
 }
 
 // ── SEARCH ──
+// ── SEARCH (IME-aware for Chinese input) ──
+const searchEl = document.getElementById('search-input');
+let isComposing = false;
+searchEl.addEventListener('compositionstart', () => { isComposing = true; });
+searchEl.addEventListener('compositionend',   (e) => { isComposing = false; onSearch(e.target.value); });
+searchEl.addEventListener('input',            (e) => { if (!isComposing) onSearch(e.target.value); });
+
 function onSearch(val) {
   searchQuery=val;
   document.getElementById('search-clear').classList.toggle('show',val.length>0);

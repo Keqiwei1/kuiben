@@ -82,26 +82,28 @@
 
     /* ── LANG TOGGLE ── */
     .lang-toggle {
-      display: inline-flex; align-items: center;
-      background: rgba(255,255,255,0.1);
-      border: 1.5px solid rgba(255,255,255,0.2);
-      border-radius: 100px;
-      overflow: hidden;
-      font-family: var(--font-body);
-      font-size: 0.78rem;
+      position: fixed;
+      top: 1rem;
+      right: 1.2rem;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
     .lang-btn {
-      background: none; border: none;
-      color: rgba(255,255,255,0.55);
-      padding: 0.4rem 0.8rem;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.45);
       font-family: var(--font-body);
       font-size: 0.78rem;
       letter-spacing: 0.05em;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s;
     }
-    .lang-btn.active { background: rgba(255,255,255,0.2); color: #fff; font-weight: 700; }
-    .lang-sep { width: 1px; background: rgba(255,255,255,0.2); height: 20px; }
+    .lang-btn:hover { color: rgba(255,255,255,0.8); }
+    .lang-btn.active { color: #fff; font-weight: 700; }
+    .lang-sep { font-size: 0.7rem; color: rgba(255,255,255,0.25); }
     #loading-screen {
       position: fixed; inset: 0; background: linear-gradient(135deg,#4a6fa5,#5b8dd9);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -348,6 +350,13 @@
 </head>
 <body>
 
+<!-- LANG TOGGLE (fixed top right) -->
+<div class="lang-toggle">
+  <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+  <span class="lang-sep">/</span>
+  <button class="lang-btn" id="lang-zh" onclick="setLang('zh')">中文</button>
+</div>
+
 <!-- LOADING -->
 <div id="loading-screen">
   <span class="ls-name">Kuiben</span>
@@ -374,11 +383,7 @@
         </div>
         <button class="sign-out-btn" onclick="signOut()">Sign out</button>
       </div>
-      <div class="lang-toggle">
-        <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
-        <div class="lang-sep"></div>
-        <button class="lang-btn" id="lang-zh" onclick="setLang('zh')">中文</button>
-      </div>
+      <button class="header-pill" id="sign-in-pill" onclick="openAuth()">
         <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Sign in / Sign up
       </button>
@@ -668,9 +673,9 @@ async function init() {
   }
 
   clearTimeout(loadingTimeout);
-  console.log('init: calling updateUserUI, applyLang, render...');
-  updateUserUI();
+  console.log('init: calling applyLang first, then updateUserUI, render...');
   applyLang();
+  updateUserUI();
   applyOwnerMode(false);
   render();
   console.log('init: done, hiding loading screen');
@@ -869,20 +874,24 @@ function updateUserUI() {
   const wrap = document.getElementById('user-badge-wrap');
   const pill = document.getElementById('sign-in-pill');
   if (currentProfile) {
-    wrap.style.display='flex'; pill.style.display='none';
-    document.getElementById('user-display-name').textContent = currentProfile.name;
-    document.getElementById('user-avatar-initials').textContent = currentProfile.name.charAt(0).toUpperCase();
+    if (wrap) wrap.style.display='flex';
+    if (pill) pill.style.display='none';
+    const dn = document.getElementById('user-display-name');
+    const ai = document.getElementById('user-avatar-initials');
+    if (dn) dn.textContent = currentProfile.name;
+    if (ai) ai.textContent = currentProfile.name.charAt(0).toUpperCase();
   } else {
-    wrap.style.display='none'; pill.style.display='inline-flex';
+    if (wrap) wrap.style.display='none';
+    if (pill) pill.style.display='inline-flex';
   }
   updateCounts();
 }
 
 function updateCounts() {
-  const wc=document.getElementById('wl-count');
-  wc.textContent=userWishlist.length; wc.classList.toggle('show',userWishlist.length>0);
-  const fc=document.getElementById('fav-count');
-  fc.textContent=userFavorites.length; fc.classList.toggle('show',userFavorites.length>0);
+  const wc = document.getElementById('wl-count');
+  if (wc) { wc.textContent=userWishlist.length; wc.classList.toggle('show',userWishlist.length>0); }
+  const fc = document.getElementById('fav-count');
+  if (fc) { fc.textContent=userFavorites.length; fc.classList.toggle('show',userFavorites.length>0); }
 }
 
 // ── FAVORITES ──

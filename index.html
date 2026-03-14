@@ -7,16 +7,19 @@
   <!-- ── SEO ── -->
   <title>Kuiben Kitchen & Bar — 好好吃饭，好好生活</title>
   <meta name="description" content="Kuiben Kitchen & Bar — a personal collection of handcrafted food, cocktails and desserts. Browse the menu, save your favourites and request a recipe. 好好吃饭，好好生活。"/>
-  <meta name="keywords" content="Kuiben, Kitchen, Bar, homemade food, cocktails, desserts, personal menu, recipe request"/>
+  <meta name="keywords" content="Kuiben, Kitchen, Bar, homemade food, cocktails, desserts, personal menu, recipe request, 美食, 饮品, 甜点, 食谱"/>
   <meta name="robots" content="index, follow"/>
-  <link rel="canonical" href="https://kuiben.com"/>
+  <link rel="canonical" href="https://atkuiben.com"/>
+  <link rel="alternate" hreflang="en" href="https://atkuiben.com"/>
+  <link rel="alternate" hreflang="zh" href="https://atkuiben.com"/>
+  <link rel="alternate" hreflang="x-default" href="https://atkuiben.com"/>
 
   <!-- ── Open Graph (WhatsApp, Facebook, iMessage previews) ── -->
   <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://kuiben.com"/>
+  <meta property="og:url" content="https://atkuiben.com"/>
   <meta property="og:title" content="Kuiben Kitchen & Bar"/>
   <meta property="og:description" content="A personal menu of handcrafted food, cocktails & desserts. 好好吃饭，好好生活。"/>
-  <meta property="og:image" content="https://kuiben.com/og-image.jpg"/>
+  <meta property="og:image" content="https://atkuiben.com/og-image.jpg"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:locale:alternate" content="zh_CN"/>
 
@@ -24,7 +27,7 @@
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Kuiben Kitchen & Bar"/>
   <meta name="twitter:description" content="A personal menu of handcrafted food, cocktails & desserts. 好好吃饭，好好生活。"/>
-  <meta name="twitter:image" content="https://kuiben.com/og-image.jpg"/>
+  <meta name="twitter:image" content="https://atkuiben.com/og-image.jpg"/>
 
   <!-- ── Structured Data (Google Rich Results) ── -->
   <script type="application/ld+json">
@@ -33,9 +36,9 @@
     "@type": "Restaurant",
     "name": "Kuiben Kitchen & Bar",
     "description": "A personal collection of handcrafted food, cocktails and desserts.",
-    "url": "https://kuiben.com",
+    "url": "https://atkuiben.com",
     "servesCuisine": ["Fusion", "Cocktails", "Desserts"],
-    "hasMenu": "https://kuiben.com",
+    "hasMenu": "https://atkuiben.com",
     "inLanguage": ["en", "zh"]
   }
   </script>
@@ -74,7 +77,28 @@
       pointer-events: none; z-index: 0; opacity: 0.4;
     }
 
-    /* ── LOADING SCREEN ── */
+    /* ── LANG TOGGLE ── */
+    .lang-toggle {
+      display: inline-flex; align-items: center;
+      background: rgba(255,255,255,0.1);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      overflow: hidden;
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+    }
+    .lang-btn {
+      background: none; border: none;
+      color: rgba(255,255,255,0.55);
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+    }
+    .lang-btn.active { background: rgba(255,255,255,0.2); color: #fff; font-weight: 700; }
+    .lang-sep { width: 1px; background: rgba(255,255,255,0.2); height: 20px; }
     #loading-screen {
       position: fixed; inset: 0; background: linear-gradient(135deg,#4a6fa5,#5b8dd9);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -99,8 +123,31 @@
     header h1 em { font-style:normal; color:rgba(255,255,255,0.5); font-size:0.28em; letter-spacing:0.4em; font-family:var(--font-body); text-transform:uppercase; display:block; margin-top:-0.2em; }
     header p { font-size:0.88rem; color:rgba(255,255,255,0.65); margin:0 auto 1.8rem; white-space:nowrap; }
     .header-pills { display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap; }
-    .header-pill { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(255,255,255,0.1); border:1.5px solid rgba(255,255,255,0.2); color:#fff9f2; padding:0.55rem 1.3rem; border-radius:100px; font-family:var(--font-body); font-size:0.88rem; cursor:pointer; transition:background 0.2s,transform 0.2s; }
+    .header-pill { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(255,255,255,0.1); border:1.5px solid rgba(255,255,255,0.2); color:#fff9f2; padding:0.55rem 1.3rem; border-radius:100px; font-family:var(--font-body); font-size:0.88rem; cursor:pointer; transition:background 0.2s,transform 0.2s; text-decoration:none; }
     .header-pill:hover { background:rgba(255,255,255,0.18); transform:translateY(-1px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: linear-gradient(135deg, #3a5f95, #4a6fa5);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      position: relative; z-index: 1;
+    }
+    .footer-inner { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+    .footer-name { font-family: 'Caveat', cursive; font-size: 2rem; color: #fff; line-height: 1; }
+    .footer-tagline { font-family: 'Noto Sans SC', sans-serif; font-weight: 300; font-size: 0.82rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.55); }
+    .footer-socials { display: flex; gap: 1.8rem; flex-wrap: wrap; justify-content: center; }
+    .footer-social {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: rgba(255,255,255,0.65); font-size: 0.82rem;
+      font-family: var(--font-body); text-decoration: none;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .footer-social:hover { color: #fff; transform: translateY(-1px); }
+    .footer-social svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.8; }
+    .footer-divider { width: 40px; height: 1px; background: rgba(255,255,255,0.2); }
+    .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.35); letter-spacing: 0.08em; }
     .pill-count { background:#dc3c50; color:#fff; border-radius:100px; padding:0 6px; font-size:0.75rem; font-weight:700; min-width:20px; text-align:center; display:none; }
     .pill-count.show { display:inline-block; }
     .user-badge { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.25); color:#fff; border-radius:100px; padding:0.4rem 1rem 0.4rem 0.5rem; font-size:0.82rem; }
@@ -172,7 +219,7 @@
     .card { background:var(--surface); border-radius:var(--radius); overflow:hidden; border:1px solid var(--border); box-shadow:0 2px 12px var(--shadow); transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.3s ease; display:flex; flex-direction:column; }
     .card:hover { transform:translateY(-8px) scale(1.01); box-shadow:0 20px 40px rgba(26,26,62,0.14); }
     .card-img-wrap { position:relative; cursor:pointer; overflow:hidden; }
-    .card-img-wrap::after { content:'View details'; position:absolute; inset:0; background:rgba(26,18,40,0.45); color:#fff; font-family:var(--font-body); font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.25s; }
+    .card-img-wrap::after { content:attr(data-view); position:absolute; inset:0; background:rgba(26,18,40,0.45); color:#fff; font-family:var(--font-body); font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.25s; }
     .card-img-wrap:hover::after { opacity:1; }
     .card-img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; background:var(--cream); }
     .card-img-placeholder { width:100%; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#fce8eb 0%,#dce4f5 100%); }
@@ -324,7 +371,11 @@
         </div>
         <button class="sign-out-btn" onclick="signOut()">Sign out</button>
       </div>
-      <button class="header-pill" id="sign-in-pill" onclick="openAuth()">
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+        <div class="lang-sep"></div>
+        <button class="lang-btn" id="lang-zh" onclick="setLang('zh')">中文</button>
+      </div>
         <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Sign in / Sign up
       </button>
@@ -476,6 +527,10 @@
     <div class="add-form">
       <div class="form-group"><label>Name</label><input type="text" id="f-name" placeholder="e.g. Spicy Mango Margarita"/></div>
       <div class="form-group">
+        <label style="display:flex;align-items:center;gap:0.4rem">中文名称 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese name)</span></label>
+        <input type="text" id="f-name-zh" placeholder="例如：芒果玛格丽特"/>
+      </div>
+      <div class="form-group">
         <label>Category</label>
         <select id="f-cat">
           <option value="Food">Food</option>
@@ -488,7 +543,11 @@
         <input type="file" id="f-photo" accept="image/*" onchange="previewImg(event)"/>
         <img class="img-preview" id="img-preview" alt="Preview"/>
       </div>
-      <div class="form-group"><label>Ingredients (comma-separated)</label><textarea id="f-ingredients" rows="3" placeholder="e.g. Mango, Lime, Tequila"></textarea></div>
+      <div class="form-group"><label>Ingredients (comma-separated)</label><textarea id="f-ingredients" rows="2" placeholder="e.g. Mango, Lime, Tequila"></textarea></div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:0.4rem">主要食材 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese ingredients)</span></label>
+        <textarea id="f-ingredients-zh" rows="2" placeholder="例如：芒果，青柠，龙舌兰酒"></textarea>
+      </div>
       <button class="form-submit" onclick="addItem()">Add to Menu</button>
     </div>
   </div>
@@ -507,6 +566,10 @@
     <div class="add-form">
       <div class="form-group"><label>Name</label><input type="text" id="e-name"/></div>
       <div class="form-group">
+        <label style="display:flex;align-items:center;gap:0.4rem">中文名称 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese name)</span></label>
+        <input type="text" id="e-name-zh" placeholder="例如：芒果玛格丽特"/>
+      </div>
+      <div class="form-group">
         <label>Category</label>
         <select id="e-cat">
           <option value="Food">Food</option>
@@ -514,11 +577,36 @@
           <option value="Desserts">Desserts</option>
         </select>
       </div>
-      <div class="form-group"><label>Ingredients (comma-separated)</label><textarea id="e-ingredients" rows="3"></textarea></div>
+      <div class="form-group"><label>Ingredients (comma-separated)</label><textarea id="e-ingredients" rows="2"></textarea></div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:0.4rem">主要食材 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese ingredients)</span></label>
+        <textarea id="e-ingredients-zh" rows="2" placeholder="例如：芒果，青柠，龙舌兰酒"></textarea>
+      </div>
       <button class="form-submit" onclick="saveEdit()">Save Changes</button>
     </div>
   </div>
 </div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-name">Kuiben</div>
+    <div class="footer-tagline">好好吃饭，好好生活</div>
+    <div class="footer-socials">
+      <a class="footer-social" href="https://www.instagram.com/keqi_wei_yo" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        @keqi_wei_yo
+      </a>
+      <a class="footer-social" href="https://xhslink.com/m/4AGFtRBvpQE" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24">
+          <text x="12" y="17" text-anchor="middle" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="700" fill="currentColor">红</text>
+        </svg>
+        魏小厨今天吃什么
+      </a>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-copy">© 2026 Kuiben Kitchen & Bar · atkuiben.com</div>
+  </div>
+</footer>
 
 <div id="toast"></div>
 
@@ -548,37 +636,65 @@ const catIcon = {
 
 // ── INIT ──
 async function init() {
-  await loadItems();
-  const savedPhone = localStorage.getItem('kuiben-phone');
-  if (savedPhone) {
-    const { data } = await sb.from('profiles').select('*').eq('phone', savedPhone).single();
-    if (data) {
-      currentProfile = data;
-      await loadUserData();
-    }
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-zh').classList.toggle('active', lang === 'zh');
+
+  // Safety timeout — hide loading screen after 6s no matter what
+  const loadingTimeout = setTimeout(() => hideLoading(), 6000);
+
+  try {
+    await loadItems();
+  } catch(e) {
+    console.warn('Failed to load items:', e);
+    items = [];
   }
+
+  try {
+    const savedPhone = localStorage.getItem('kuiben-phone');
+    if (savedPhone) {
+      const { data } = await sb.from('profiles').select('*').eq('phone', savedPhone).single();
+      if (data) { currentProfile = data; await loadUserData(); }
+    }
+  } catch(e) {
+    console.warn('Failed to load user:', e);
+  }
+
+  clearTimeout(loadingTimeout);
   updateUserUI();
+  applyLang();
   applyOwnerMode(false);
   render();
-  document.getElementById('loading-screen').classList.add('hidden');
-  setTimeout(() => document.getElementById('loading-screen').remove(), 500);
+  hideLoading();
+}
+
+function hideLoading() {
+  const screen = document.getElementById('loading-screen');
+  if (screen) {
+    screen.classList.add('hidden');
+    setTimeout(() => screen.remove(), 500);
+  }
 }
 
 // ── LOAD ITEMS ──
 async function loadItems() {
   const { data, error } = await sb.from('menu_items').select('*').order('created_at', { ascending: false });
+  if (error) throw error;
   if (data) items = data;
 }
 
-// ── LOAD USER FAVORITES & WISHLIST ──
 async function loadUserData() {
   if (!currentProfile) return;
-  const [favRes, wlRes] = await Promise.all([
-    sb.from('favorites').select('item_id').eq('profile_id', currentProfile.id),
-    sb.from('wishlists').select('item_id').eq('profile_id', currentProfile.id),
-  ]);
-  userFavorites = (favRes.data || []).map(r => r.item_id);
-  userWishlist  = (wlRes.data  || []).map(r => r.item_id);
+  try {
+    const [favRes, wlRes] = await Promise.all([
+      sb.from('favorites').select('item_id').eq('profile_id', currentProfile.id),
+      sb.from('wishlists').select('item_id').eq('profile_id', currentProfile.id),
+    ]);
+    userFavorites = (favRes.data || []).map(r => r.item_id);
+    userWishlist  = (wlRes.data  || []).map(r => r.item_id);
+  } catch(e) {
+    console.warn('Failed to load user data:', e);
+  }
 }
 
 // ── HIGHLIGHT ──
@@ -606,12 +722,10 @@ function render() {
   else if (sortOrder === 'za') filtered.sort((a,b) => (b.name||'').localeCompare(a.name||''));
 
   const titles = {
-    all: 'Everything',
-    'Food': 'Food',
-    'Cocktails / Drinks': 'Cocktails & Drinks',
-    'Desserts': 'Desserts',
+    all: t('everything'), 'Food': t('foodTitle'),
+    'Cocktails / Drinks': t('drinksTitle'), 'Desserts': t('dessertsTitle'),
   };
-  document.getElementById('section-title').textContent = titles[activeTab] || 'Everything';
+  document.getElementById('section-title').textContent = titles[activeTab] || t('everything');
 
   // Tab counts
   ['Food','Cocktails / Drinks','Desserts'].forEach(cat => {
@@ -622,14 +736,14 @@ function render() {
 
   if (q) {
     resultsLabel.style.display = 'block';
-    resultsLabel.textContent = filtered.length ? `${filtered.length} result${filtered.length!==1?'s':''} for "${searchQuery}"` : 'No results found';
+    resultsLabel.textContent = filtered.length ? t('results', filtered.length, searchQuery) : t('noResults');
   } else { resultsLabel.style.display = 'none'; }
 
   if (!filtered.length) {
     grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
       <div class="icon"><svg style="width:48px;height:48px;stroke:var(--muted);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
-      <h3>${q ? 'No results found' : 'Nothing here yet'}</h3>
-      <p>${q ? 'Try a different name or ingredient.' : 'Check back soon!'}</p>
+      <h3>${q ? t('noResults') : t('nothingYet')}</h3>
+      <p>${q ? t('tryDiff') : t('checkBack')}</p>
     </div>`;
     return;
   }
@@ -640,7 +754,10 @@ function render() {
     const imgEl = item.photo_url
       ? `<img class="card-img" src="${item.photo_url}" alt="${item.name}" loading="lazy"/>`
       : `<div class="card-img-placeholder">${catIcon[item.category]||catIcon['Food']}</div>`;
-    const tags = (item.ingredients||[]).map(ing => `<span class="ing-tag">${highlight(ing, searchQuery)}</span>`).join('');
+    const displayName = (lang==='zh' && item.name_zh) ? item.name_zh : item.name;
+    const displayIngs = (lang==='zh' && item.ingredients_zh?.length) ? item.ingredients_zh : (item.ingredients||[]);
+    const tags = displayIngs.map(ing => `<span class="ing-tag">${highlight(ing, searchQuery)}</span>`).join('');
+    const subName = (lang==='zh' && item.name_zh) ? `<span style="font-size:0.7rem;color:var(--muted);font-weight:400;display:block;margin-top:1px">${item.name}</span>` : '';
     const ownerCtrl = isOwner ? `
       <div class="owner-card-controls">
         <button class="owner-ctrl-btn edit-ctrl" onclick="openEdit(${item.id});event.stopPropagation()">✎</button>
@@ -648,29 +765,29 @@ function render() {
       </div>` : '';
     return `
       <div class="card${isOwner?' owner-visible-mode':''}" id="card-${item.id}">
-        <div class="card-img-wrap" onclick="openDetailPage(${item.id})">
+        <div class="card-img-wrap" data-view="${t('viewDetails')}" onclick="openDetailPage(${item.id})">
           ${imgEl}${ownerCtrl}
         </div>
         <div class="card-body">
-          <div class="card-name" onclick="openDetailPage(${item.id})">${highlight(item.name, searchQuery)}</div>
+          <div class="card-name" onclick="openDetailPage(${item.id})">${highlight(displayName, searchQuery)}${subName}</div>
           <div class="card-category${showCat?' show':''}">${item.category}</div>
           <div class="ing-divider"></div>
-          <div class="ingredients-label">Ingredients</div>
+          <div class="ingredients-label">${t('ingredients')}</div>
           <div class="ingredients">${tags || '<span style="color:var(--muted);font-size:0.8rem">—</span>'}</div>
           <div class="card-actions">
             <button class="card-action-btn ${isFav?'active-fav':''}" id="fav-btn-${item.id}" onclick="toggleFavorite(${item.id})">
               <svg viewBox="0 0 24 24" style="fill:${isFav?'currentColor':'none'}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <span class="btn-tip">Favorite</span>
-              <span class="saved-tip" id="tip-fav-${item.id}">Saved!</span>
+              <span class="btn-tip">${t('btnFav')}</span>
+              <span class="saved-tip" id="tip-fav-${item.id}">${t('savedTip')}</span>
             </button>
             <button class="card-action-btn ${isWl?'active-wl':''}" id="wl-btn-${item.id}" onclick="toggleWishlist(${item.id})">
               <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              <span class="btn-tip">Wishlist</span>
-              <span class="saved-tip" id="tip-wl-${item.id}">Saved!</span>
+              <span class="btn-tip">${t('btnWishlist')}</span>
+              <span class="saved-tip" id="tip-wl-${item.id}">${t('savedTip')}</span>
             </button>
             <button class="card-action-btn" onclick="openReq(${item.id})">
               <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              <span class="btn-tip">Request Recipe</span>
+              <span class="btn-tip">${t('btnRequest')}</span>
             </button>
           </div>
         </div>
@@ -699,40 +816,39 @@ async function doSignUp() {
   const phone = normalizePhone(document.getElementById('su-phone').value);
   const err   = document.getElementById('su-error');
   const load  = document.getElementById('su-loading');
-  if (!name)           { err.textContent='Please enter your name.'; return; }
-  if (phone.length<7)  { err.textContent='Please enter a valid phone number.'; return; }
+  if (!name)           { err.textContent=t('errName'); return; }
+  if (phone.length<7)  { err.textContent=t('errPhone'); return; }
   load.style.display='block'; err.textContent='';
-  // Check if phone exists
   const { data: existing } = await sb.from('profiles').select('id').eq('phone',phone).single();
-  if (existing) { load.style.display='none'; err.textContent='That number is already registered. Sign in instead!'; return; }
+  if (existing) { load.style.display='none'; err.textContent=t('errExists'); return; }
   const { data, error } = await sb.from('profiles').insert([{ name, phone }]).select().single();
   load.style.display='none';
-  if (error) { err.textContent='Something went wrong. Please try again.'; return; }
+  if (error) { err.textContent=t('errGeneric'); return; }
   currentProfile = data;
   userFavorites=[]; userWishlist=[];
   localStorage.setItem('kuiben-phone', phone);
-  closeAuth(); updateUserUI(); render(); showToast(`Welcome, ${name}!`);
+  closeAuth(); updateUserUI(); render(); showToast(t('welcome', name));
 }
 
 async function doSignIn() {
   const phone = normalizePhone(document.getElementById('si-phone').value);
   const err   = document.getElementById('si-error');
   const load  = document.getElementById('si-loading');
-  if (phone.length<7) { err.textContent='Please enter a valid phone number.'; return; }
+  if (phone.length<7) { err.textContent=t('errPhone'); return; }
   load.style.display='block'; err.textContent='';
   const { data, error } = await sb.from('profiles').select('*').eq('phone',phone).single();
   load.style.display='none';
-  if (!data) { err.textContent='No account found. Sign up first!'; return; }
+  if (!data) { err.textContent=t('errNotFound'); return; }
   currentProfile = data;
   localStorage.setItem('kuiben-phone', phone);
   await loadUserData();
-  closeAuth(); updateUserUI(); render(); showToast(`Welcome back, ${data.name}!`);
+  closeAuth(); updateUserUI(); render(); showToast(t('welcomeBack', data.name));
 }
 
 function signOut() {
   currentProfile=null; userFavorites=[]; userWishlist=[];
   localStorage.removeItem('kuiben-phone');
-  updateUserUI(); render(); showToast('Signed out');
+  updateUserUI(); render(); showToast(t('signedOut'));
 }
 
 function updateUserUI() {
@@ -757,7 +873,7 @@ function updateCounts() {
 
 // ── FAVORITES ──
 async function toggleFavorite(id) {
-  if (!currentProfile) { openAuth(); showToast('Sign in to save favourites'); return; }
+  if (!currentProfile) { openAuth(); showToast(t('signIn')); return; }
   const btn = document.getElementById(`fav-btn-${id}`);
   const tip = document.getElementById(`tip-fav-${id}`);
   const idx = userFavorites.indexOf(id);
@@ -778,7 +894,7 @@ function openFavorites()  { if (!currentProfile){openAuth();return;} renderFavor
 function closeFavorites(e){ if (!e||e.target===document.getElementById('fav-overlay')) document.getElementById('fav-overlay').classList.remove('open'); }
 function renderFavorites() {
   const list=document.getElementById('fav-list');
-  if (!userFavorites.length) { list.innerHTML=`<div class="wl-empty">No favourites yet — star something!</div>`; return; }
+  if (!userFavorites.length) { list.innerHTML=`<div class="wl-empty">${t('noFavs')}</div>`; return; }
   list.innerHTML=userFavorites.map(id=>{
     const item=items.find(i=>i.id===id); if(!item) return '';
     return `<div class="wl-item"><div class="wl-item-icon">${catIcon[item.category]||catIcon['Food']}</div><div class="wl-item-info"><div class="wl-item-name">${item.name}</div><div class="wl-item-cat">${item.category}</div></div><button class="wl-remove" onclick="toggleFavorite(${item.id});renderFavorites()">✕</button></div>`;
@@ -787,7 +903,7 @@ function renderFavorites() {
 
 // ── WISHLIST ──
 async function toggleWishlist(id) {
-  if (!currentProfile) { openAuth(); showToast('Sign in to save your wishlist'); return; }
+  if (!currentProfile) { openAuth(); showToast(t('signIn')); return; }
   const btn=document.getElementById(`wl-btn-${id}`);
   const tip=document.getElementById(`tip-wl-${id}`);
   const idx=userWishlist.indexOf(id);
@@ -808,7 +924,7 @@ function openWishlist()  { if (!currentProfile){openAuth();return;} renderWishli
 function closeWishlist(e){ if (!e||e.target===document.getElementById('wl-overlay')) document.getElementById('wl-overlay').classList.remove('open'); }
 function renderWishlist() {
   const list=document.getElementById('wl-list');
-  if (!userWishlist.length) { list.innerHTML=`<div class="wl-empty">No wishlist items yet!</div>`; return; }
+  if (!userWishlist.length) { list.innerHTML=`<div class="wl-empty">${t('noWishlist')}</div>`; return; }
   list.innerHTML=userWishlist.map(id=>{
     const item=items.find(i=>i.id===id); if(!item) return '';
     return `<div class="wl-item"><div class="wl-item-icon">${catIcon[item.category]||catIcon['Food']}</div><div class="wl-item-info"><div class="wl-item-name">${item.name}</div><div class="wl-item-cat">${item.category}</div></div><button class="wl-remove" onclick="toggleWishlist(${item.id});renderWishlist()">✕</button></div>`;
@@ -830,7 +946,7 @@ function closeReq(e) { if (!e||e.target===document.getElementById('req-overlay')
 
 async function submitRequest() {
   const name=document.getElementById('req-name').value.trim();
-  if (!name) { showToast('Please enter your name!'); return; }
+  if (!name) { showToast(t('errReqName')); return; }
   const note=document.getElementById('req-note').value.trim();
   const item=items.find(i=>i.id===pendingRequestId);
   await sb.from('requests').insert([{
@@ -840,13 +956,12 @@ async function submitRequest() {
     dish_name: item?.name || 'Unknown',
     note,
   }]);
-  // Also send to Google Sheets if configured
   const SHEET_URL='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
   if (SHEET_URL!=='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
     fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dish:item?.name,note,time:new Date().toLocaleString()})});
   }
   document.getElementById('req-form-wrap').style.display='none';
-  document.getElementById('req-confirm-text').textContent=`Your request for "${item?.name}" has been sent to the chef!`;
+  document.getElementById('req-confirm-text').textContent=t('requestConfirm', item?.name||'');
   document.getElementById('req-confirm').classList.add('show');
 }
 
@@ -862,52 +977,69 @@ function openAdd()  { document.getElementById('add-overlay').classList.add('open
 function closeAdd(e){ if (!e||e.target===document.getElementById('add-overlay')) document.getElementById('add-overlay').classList.remove('open'); }
 
 async function addItem() {
-  const name=document.getElementById('f-name').value.trim();
-  const cat =document.getElementById('f-cat').value;
-  if (!name) { showToast('Please enter a name!'); return; }
-  const ings=document.getElementById('f-ingredients').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const name    = document.getElementById('f-name').value.trim();
+  const nameZh  = document.getElementById('f-name-zh').value.trim();
+  const cat     = document.getElementById('f-cat').value;
+  if (!name) { showToast(t('errItemName')); return; }
+  const ings    = document.getElementById('f-ingredients').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const ingsZh  = document.getElementById('f-ingredients-zh').value.split(',').map(s=>s.trim()).filter(Boolean);
   const { data, error } = await sb.from('menu_items').insert([{
-    name, category: cat, ingredients: ings, photo_url: pendingPhoto||null
+    name, name_zh: nameZh||null, category: cat,
+    ingredients: ings, ingredients_zh: ingsZh.length ? ingsZh : null,
+    photo_url: pendingPhoto||null
   }]).select().single();
-  if (error) { showToast('Error saving. Try again.'); return; }
+  if (error) { showToast(t('errGeneric')); return; }
   items.unshift(data);
   document.getElementById('f-name').value='';
+  document.getElementById('f-name-zh').value='';
   document.getElementById('f-ingredients').value='';
+  document.getElementById('f-ingredients-zh').value='';
   document.getElementById('f-photo').value='';
   document.getElementById('img-preview').classList.remove('show');
   pendingPhoto=null;
-  closeAdd(); render(); showToast(`"${name}" added!`);
+  closeAdd(); render(); showToast(t('added', name));
 }
 
 // ── EDIT & DELETE ──
 function openEdit(id) {
   const item=items.find(i=>i.id===id); if (!item) return;
   editingId=id;
-  document.getElementById('e-name').value=item.name;
+  document.getElementById('e-name').value=item.name||'';
+  document.getElementById('e-name-zh').value=item.name_zh||'';
   document.getElementById('e-cat').value=item.category;
   document.getElementById('e-ingredients').value=(item.ingredients||[]).join(', ');
+  document.getElementById('e-ingredients-zh').value=(item.ingredients_zh||[]).join(', ');
   document.getElementById('edit-overlay').classList.add('open');
 }
 function closeEdit(e) { if (!e||e.target===document.getElementById('edit-overlay')) document.getElementById('edit-overlay').classList.remove('open'); }
 
 async function saveEdit() {
-  const name=document.getElementById('e-name').value.trim();
-  if (!name) { showToast('Please enter a name!'); return; }
-  const ings=document.getElementById('e-ingredients').value.split(',').map(s=>s.trim()).filter(Boolean);
-  const cat =document.getElementById('e-cat').value;
-  const { error } = await sb.from('menu_items').update({ name, category:cat, ingredients:ings }).eq('id',editingId);
-  if (error) { showToast('Error saving.'); return; }
+  const name    = document.getElementById('e-name').value.trim();
+  const nameZh  = document.getElementById('e-name-zh').value.trim();
+  if (!name) { showToast(t('errItemName')); return; }
+  const ings    = document.getElementById('e-ingredients').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const ingsZh  = document.getElementById('e-ingredients-zh').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const cat     = document.getElementById('e-cat').value;
+  const { error } = await sb.from('menu_items').update({
+    name, name_zh: nameZh||null, category: cat,
+    ingredients: ings, ingredients_zh: ingsZh.length ? ingsZh : null
+  }).eq('id',editingId);
+  if (error) { showToast(t('errGeneric')); return; }
   const idx=items.findIndex(i=>i.id===editingId);
-  if (idx!==-1) { items[idx].name=name; items[idx].category=cat; items[idx].ingredients=ings; }
-  closeEdit(); render(); showToast('Dish updated!');
+  if (idx!==-1) {
+    items[idx].name=name; items[idx].name_zh=nameZh||null;
+    items[idx].category=cat;
+    items[idx].ingredients=ings; items[idx].ingredients_zh=ingsZh.length?ingsZh:null;
+  }
+  closeEdit(); render(); showToast(t('updated'));
 }
 
 async function confirmDelete(id) {
   const item=items.find(i=>i.id===(id||editingId));
-  if (!item||!confirm(`Delete "${item.name}"? This cannot be undone.`)) return;
+  if (!item||!confirm(t('confirmDelete', item.name))) return;
   await sb.from('menu_items').delete().eq('id',item.id);
   items=items.filter(i=>i.id!==item.id);
-  closeEdit(); render(); showToast('Dish deleted');
+  closeEdit(); render(); showToast(t('deleted'));
 }
 
 // ── DETAIL PAGE ──
@@ -981,11 +1113,178 @@ document.getElementById('kuiben-tap-target').addEventListener('click',()=>{
     tapCount=0; isOwner=!isOwner;
     sessionStorage.setItem('kuiben-owner',isOwner?'true':'false');
     applyOwnerMode(true);
-    showToast(isOwner?'Owner mode on':'Owner mode off');
+    showToast(isOwner?t('ownerOn'):t('ownerOff'));
   }
 });
 
 init();
+
+// ── i18n ──
+const i18n = {
+  en: {
+    signIn: 'Sign in / Sign up', signOut: 'Sign out',
+    favorites: 'Favorites', wishlist: 'Wishlist',
+    tabAll: 'All', tabFood: 'Food', tabDrinks: 'Drinks', tabDesserts: 'Desserts',
+    searchPlaceholder: 'Search by name or ingredient…',
+    sortNewest: 'Newest first', sortAZ: 'A → Z', sortZA: 'Z → A',
+    ingredients: 'Ingredients',
+    viewDetails: 'View details',
+    btnFav: 'Favorite', btnWishlist: 'Wishlist', btnRequest: 'Request Recipe',
+    savedTip: 'Saved!',
+    requestTitle: 'Request Recipe', yourName: 'Your name',
+    namePlaceholder: 'e.g. Sarah',
+    msgLabel: 'Message (optional)', msgPlaceholder: 'Any notes or dietary preferences…',
+    sendRequest: 'Send Request',
+    requestSent: 'Request Sent!',
+    requestConfirm: (dish) => `Your request for "${dish}" has been sent to the chef!`,
+    showChef: 'Show this to the chef!',
+    noFavs: 'No favourites yet — star something!',
+    noWishlist: 'No wishlist items yet!',
+    myFavs: 'My Favorites', myWishlist: 'My Wishlist',
+    yourTopPicks: 'Your personal top picks',
+    addCreation: 'Add a Creation', editDish: 'Edit Dish',
+    name: 'Name', category: 'Category', photo: 'Photo',
+    ingredientsLabel: 'Ingredients (comma-separated)',
+    addToMenu: 'Add to Menu', saveChanges: 'Save Changes', delete: 'Delete',
+    everything: 'Everything', foodTitle: 'Food', drinksTitle: 'Cocktails & Drinks', dessertsTitle: 'Desserts',
+    noResults: 'No results found', tryDiff: 'Try a different name or ingredient.',
+    nothingYet: 'Nothing here yet', checkBack: 'Check back soon!',
+    ownerOn: 'Owner mode on', ownerOff: 'Owner mode off',
+    authSubtitle: 'Sign in to save your favourites & wishlist',
+    signInTab: 'Sign In', signUpTab: 'Sign Up',
+    phoneLabel: 'Phone Number', phonePlaceholder: 'e.g. 555-123-4567',
+    nameLabel: 'Your Name', nameSUPlaceholder: 'e.g. Jamie',
+    createAccount: 'Create Account',
+    welcome: (n) => `Welcome, ${n}!`, welcomeBack: (n) => `Welcome back, ${n}!`,
+    signedOut: 'Signed out',
+    footerTagline: '好好吃饭，好好生活',
+    copyright: `© 2026 Kuiben Kitchen & Bar · atkuiben.com`,
+    errName: 'Please enter your name.', errPhone: 'Please enter a valid phone number.',
+    errExists: 'That number is already registered. Sign in instead!',
+    errNotFound: 'No account found. Sign up first!', errGeneric: 'Something went wrong. Please try again.',
+    errReqName: 'Please enter your name!', errItemName: 'Please enter a name!',
+    added: (n) => `"${n}" added!`, updated: 'Dish updated!', deleted: 'Dish deleted',
+    confirmDelete: (n) => `Delete "${n}"? This cannot be undone.`,
+    results: (n, q) => `${n} result${n!==1?'s':''} for "${q}"`,
+  },
+  zh: {
+    signIn: '登录 / 注册', signOut: '退出登录',
+    favorites: '收藏', wishlist: '想吃单',
+    tabAll: '全部', tabFood: '美食', tabDrinks: '饮品', tabDesserts: '甜点',
+    searchPlaceholder: '搜索菜名或食材…',
+    sortNewest: '最新优先', sortAZ: 'A → Z', sortZA: 'Z → A',
+    ingredients: '主要食材',
+    viewDetails: '查看详情',
+    btnFav: '收藏', btnWishlist: '想吃单', btnRequest: '想要食谱',
+    savedTip: '已保存！',
+    requestTitle: '想要食谱', yourName: '你的名字',
+    namePlaceholder: '例如：小明',
+    msgLabel: '留言（选填）', msgPlaceholder: '有什么特别要求吗？',
+    sendRequest: '发送请求',
+    requestSent: '请求已发送！',
+    requestConfirm: (dish) => `你对"${dish}"的食谱请求已发送给小厨子！`,
+    showChef: '把这个给小厨子看',
+    noFavs: '快去看看有什么想吃的吧！',
+    noWishlist: '快去看看有什么想吃的吧！',
+    myFavs: '我的收藏', myWishlist: '我的想吃单',
+    yourTopPicks: '你最喜欢的菜',
+    addCreation: '添加菜品', editDish: '编辑菜品',
+    name: '名称', category: '分类', photo: '照片',
+    ingredientsLabel: '主要食材（用逗号分隔）',
+    addToMenu: '加入菜单', saveChanges: '保存修改', delete: '删除',
+    everything: '全部菜品', foodTitle: '美食', drinksTitle: '饮品', dessertsTitle: '甜点',
+    noResults: '没有找到结果', tryDiff: '试试其他菜名或食材。',
+    nothingYet: '还没有菜品', checkBack: '敬请期待！',
+    ownerOn: '主人模式 已开启', ownerOff: '主人模式 已关闭',
+    authSubtitle: '登录以保存你的收藏和想吃单',
+    signInTab: '登录', signUpTab: '注册',
+    phoneLabel: '手机号码', phonePlaceholder: '例如：13800138000',
+    nameLabel: '你的名字', nameSUPlaceholder: '例如：小明',
+    createAccount: '创建账号',
+    welcome: (n) => `欢迎，${n}！`, welcomeBack: (n) => `欢迎回来，${n}！`,
+    signedOut: '已退出登录',
+    footerTagline: '好好吃饭，好好生活',
+    copyright: `© 2026 Kuiben Kitchen & Bar · atkuiben.com`,
+    errName: '请输入你的名字。', errPhone: '请输入有效的手机号码。',
+    errExists: '该号码已注册，请直接登录！',
+    errNotFound: '未找到账号，请先注册！', errGeneric: '出了点问题，请重试。',
+    errReqName: '请输入你的名字！', errItemName: '请输入菜品名称！',
+    added: (n) => `"${n}" 已添加！`, updated: '菜品已更新！', deleted: '菜品已删除',
+    confirmDelete: (n) => `确定删除"${n}"吗？此操作无法撤销。`,
+    results: (n, q) => `"${q}" 的搜索结果：${n} 条`,
+  }
+};
+
+let lang = localStorage.getItem('kuiben-lang') || 'en';
+function t(key, ...args) {
+  const val = i18n[lang][key];
+  return typeof val === 'function' ? val(...args) : (val || i18n['en'][key] || key);
+}
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('kuiben-lang', l);
+  document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
+  document.getElementById('lang-en').classList.toggle('active', l === 'en');
+  document.getElementById('lang-zh').classList.toggle('active', l === 'zh');
+  applyLang();
+  render();
+}
+
+function applyLang() {
+  // Header
+  document.getElementById('sign-in-pill').innerHTML = `<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${t('signIn')}`;
+  document.querySelector('[onclick="openFavorites()"]').innerHTML = `<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${t('favorites')} <span class="pill-count" id="fav-count"></span>`;
+  document.querySelector('[onclick="openWishlist()"]').innerHTML = `<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${t('wishlist')} <span class="pill-count" id="wl-count"></span>`;
+  document.querySelector('.sign-out-btn').textContent = t('signOut');
+  // Tabs
+  document.querySelector('[data-tab="all"]').textContent = t('tabAll');
+  document.querySelector('[data-tab="Food"]').innerHTML = `<svg class="icon-svg" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M3 11h18v2a7 7 0 0 1-7 7H10a7 7 0 0 1-7-7v-2z"/><path d="M3 11a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4"/><path d="M19 11V7"/><path d="M12 7V4"/></svg> ${t('tabFood')} <span class="tab-count" id="count-Food"></span>`;
+  document.querySelector('[data-tab="Cocktails / Drinks"]').innerHTML = `<svg class="icon-svg" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M8 22h8M12 11v11M5 3l7 8 7-8H5z"/></svg> ${t('tabDrinks')} <span class="tab-count" id="count-Drinks"></span>`;
+  document.querySelector('[data-tab="Desserts"]').innerHTML = `<svg class="icon-svg" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M12 2L2 19h20L12 2z"/><path d="M12 2v17"/><path d="M2 19h20"/><path d="M7 12h10"/></svg> ${t('tabDesserts')} <span class="tab-count" id="count-Desserts"></span>`;
+  // Search
+  document.getElementById('search-input').placeholder = t('searchPlaceholder');
+  // Sort
+  const sort = document.getElementById('sort-select');
+  sort.options[0].text = t('sortNewest');
+  sort.options[1].text = t('sortAZ');
+  sort.options[2].text = t('sortZA');
+  // Auth modal
+  document.querySelector('.auth-header p').textContent = t('authSubtitle');
+  document.querySelectorAll('.auth-tab')[0].textContent = t('signInTab');
+  document.querySelectorAll('.auth-tab')[1].textContent = t('signUpTab');
+  document.querySelector('#panel-signin label').textContent = t('phoneLabel');
+  document.querySelector('#si-phone').placeholder = t('phonePlaceholder');
+  document.querySelector('#panel-signin .auth-btn').textContent = t('signInTab');
+  document.querySelectorAll('#panel-signup label')[0].textContent = t('nameLabel');
+  document.querySelector('#su-name').placeholder = t('nameSUPlaceholder');
+  document.querySelectorAll('#panel-signup label')[1].textContent = t('phoneLabel');
+  document.querySelector('#su-phone').placeholder = t('phonePlaceholder');
+  document.querySelector('#panel-signup .auth-btn').textContent = t('createAccount');
+  // Modals
+  document.querySelector('#fav-overlay .modal-head h3').innerHTML = `<svg style="width:18px;height:18px;stroke:#dc3c50;fill:#dc3c50;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${t('myFavs')}`;
+  document.querySelector('#fav-overlay .modal-footer').textContent = t('yourTopPicks');
+  document.querySelector('#wl-overlay .modal-head h3').innerHTML = `<svg style="width:18px;height:18px;stroke:#dc3c50;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:4px" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${t('myWishlist')}`;
+  document.querySelector('#wl-overlay .modal-footer').textContent = t('showChef');
+  document.querySelector('.req-head h3').textContent = t('requestTitle');
+  document.querySelectorAll('.req-form label')[0].textContent = t('yourName');
+  document.getElementById('req-name').placeholder = t('namePlaceholder');
+  document.querySelectorAll('.req-form label')[1].textContent = t('msgLabel');
+  document.getElementById('req-note').placeholder = t('msgPlaceholder');
+  document.querySelector('.req-submit').textContent = t('sendRequest');
+  document.querySelector('.req-confirm h4').textContent = t('requestSent');
+  // Add modal
+  document.querySelector('.add-modal-head h3').textContent = t('addCreation');
+  document.querySelectorAll('.add-form .form-group label')[0].textContent = t('name');
+  document.querySelectorAll('.add-form .form-group label')[1].textContent = t('category');
+  document.querySelectorAll('.add-form .form-group label')[2].textContent = t('photo');
+  document.querySelectorAll('.add-form .form-group label')[3].textContent = t('ingredientsLabel');
+  document.querySelector('.form-submit').textContent = t('addToMenu');
+  // Footer
+  document.querySelector('.footer-tagline').textContent = t('footerTagline');
+  document.querySelector('.footer-copy').textContent = t('copyright');
+  updateCounts();
+}
 </script>
 </body>
 </html>

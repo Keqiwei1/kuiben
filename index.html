@@ -636,35 +636,41 @@ const catIcon = {
 
 // ── INIT ──
 async function init() {
+  console.log('init: start');
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
   document.getElementById('lang-en').classList.toggle('active', lang === 'en');
   document.getElementById('lang-zh').classList.toggle('active', lang === 'zh');
 
-  // Safety timeout — hide loading screen after 6s no matter what
-  const loadingTimeout = setTimeout(() => hideLoading(), 6000);
+  const loadingTimeout = setTimeout(() => { console.log('init: timeout hit'); hideLoading(); }, 6000);
 
   try {
+    console.log('init: loading items...');
     await loadItems();
+    console.log('init: items loaded', items.length);
   } catch(e) {
     console.warn('Failed to load items:', e);
     items = [];
   }
 
   try {
+    console.log('init: checking saved user...');
     const savedPhone = localStorage.getItem('kuiben-phone');
     if (savedPhone) {
       const { data } = await sb.from('profiles').select('*').eq('phone', savedPhone).single();
       if (data) { currentProfile = data; await loadUserData(); }
     }
+    console.log('init: user done');
   } catch(e) {
     console.warn('Failed to load user:', e);
   }
 
   clearTimeout(loadingTimeout);
+  console.log('init: calling updateUserUI, applyLang, render...');
   updateUserUI();
   applyLang();
   applyOwnerMode(false);
   render();
+  console.log('init: done, hiding loading screen');
   hideLoading();
 }
 
@@ -1235,58 +1241,78 @@ function setLang(l) {
 }
 
 function applyLang() {
-  // Header
-  document.getElementById('sign-in-pill').innerHTML = `<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${t('signIn')}`;
-  document.querySelector('[onclick="openFavorites()"]').innerHTML = `<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${t('favorites')} <span class="pill-count" id="fav-count"></span>`;
-  document.querySelector('[onclick="openWishlist()"]').innerHTML = `<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${t('wishlist')} <span class="pill-count" id="wl-count"></span>`;
-  document.querySelector('.sign-out-btn').textContent = t('signOut');
-  // Tabs
-  document.querySelector('[data-tab="all"]').textContent = t('tabAll');
-  document.querySelector('[data-tab="Food"]').innerHTML = `<svg class="icon-svg" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M3 11h18v2a7 7 0 0 1-7 7H10a7 7 0 0 1-7-7v-2z"/><path d="M3 11a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4"/><path d="M19 11V7"/><path d="M12 7V4"/></svg> ${t('tabFood')} <span class="tab-count" id="count-Food"></span>`;
-  document.querySelector('[data-tab="Cocktails / Drinks"]').innerHTML = `<svg class="icon-svg" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M8 22h8M12 11v11M5 3l7 8 7-8H5z"/></svg> ${t('tabDrinks')} <span class="tab-count" id="count-Drinks"></span>`;
-  document.querySelector('[data-tab="Desserts"]').innerHTML = `<svg class="icon-svg" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M12 2L2 19h20L12 2z"/><path d="M12 2v17"/><path d="M2 19h20"/><path d="M7 12h10"/></svg> ${t('tabDesserts')} <span class="tab-count" id="count-Desserts"></span>`;
-  // Search
-  document.getElementById('search-input').placeholder = t('searchPlaceholder');
-  // Sort
-  const sort = document.getElementById('sort-select');
-  sort.options[0].text = t('sortNewest');
-  sort.options[1].text = t('sortAZ');
-  sort.options[2].text = t('sortZA');
-  // Auth modal
-  document.querySelector('.auth-header p').textContent = t('authSubtitle');
-  document.querySelectorAll('.auth-tab')[0].textContent = t('signInTab');
-  document.querySelectorAll('.auth-tab')[1].textContent = t('signUpTab');
-  document.querySelector('#panel-signin label').textContent = t('phoneLabel');
-  document.querySelector('#si-phone').placeholder = t('phonePlaceholder');
-  document.querySelector('#panel-signin .auth-btn').textContent = t('signInTab');
-  document.querySelectorAll('#panel-signup label')[0].textContent = t('nameLabel');
-  document.querySelector('#su-name').placeholder = t('nameSUPlaceholder');
-  document.querySelectorAll('#panel-signup label')[1].textContent = t('phoneLabel');
-  document.querySelector('#su-phone').placeholder = t('phonePlaceholder');
-  document.querySelector('#panel-signup .auth-btn').textContent = t('createAccount');
-  // Modals
-  document.querySelector('#fav-overlay .modal-head h3').innerHTML = `<svg style="width:18px;height:18px;stroke:#dc3c50;fill:#dc3c50;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${t('myFavs')}`;
-  document.querySelector('#fav-overlay .modal-footer').textContent = t('yourTopPicks');
-  document.querySelector('#wl-overlay .modal-head h3').innerHTML = `<svg style="width:18px;height:18px;stroke:#dc3c50;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:4px" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${t('myWishlist')}`;
-  document.querySelector('#wl-overlay .modal-footer').textContent = t('showChef');
-  document.querySelector('.req-head h3').textContent = t('requestTitle');
-  document.querySelectorAll('.req-form label')[0].textContent = t('yourName');
-  document.getElementById('req-name').placeholder = t('namePlaceholder');
-  document.querySelectorAll('.req-form label')[1].textContent = t('msgLabel');
-  document.getElementById('req-note').placeholder = t('msgPlaceholder');
-  document.querySelector('.req-submit').textContent = t('sendRequest');
-  document.querySelector('.req-confirm h4').textContent = t('requestSent');
-  // Add modal
-  document.querySelector('.add-modal-head h3').textContent = t('addCreation');
-  document.querySelectorAll('.add-form .form-group label')[0].textContent = t('name');
-  document.querySelectorAll('.add-form .form-group label')[1].textContent = t('category');
-  document.querySelectorAll('.add-form .form-group label')[2].textContent = t('photo');
-  document.querySelectorAll('.add-form .form-group label')[3].textContent = t('ingredientsLabel');
-  document.querySelector('.form-submit').textContent = t('addToMenu');
-  // Footer
-  document.querySelector('.footer-tagline').textContent = t('footerTagline');
-  document.querySelector('.footer-copy').textContent = t('copyright');
-  updateCounts();
+  try {
+    const qs  = (s) => document.querySelector(s);
+    const qsa = (s) => document.querySelectorAll(s);
+    const set = (sel, prop, val) => { const el = qs(sel); if (el) el[prop] = val; };
+
+    // Header
+    set('#sign-in-pill', 'innerHTML', `<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${t('signIn')}`);
+    set('[onclick="openFavorites()"]', 'innerHTML', `<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${t('favorites')} <span class="pill-count" id="fav-count"></span>`);
+    set('[onclick="openWishlist()"]', 'innerHTML', `<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${t('wishlist')} <span class="pill-count" id="wl-count"></span>`);
+    set('.sign-out-btn', 'textContent', t('signOut'));
+
+    // Tabs
+    set('[data-tab="all"]', 'textContent', t('tabAll'));
+    const tabFood = qs('[data-tab="Food"]');
+    if (tabFood) tabFood.innerHTML = `<svg class="icon-svg" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M3 11h18v2a7 7 0 0 1-7 7H10a7 7 0 0 1-7-7v-2z"/><path d="M3 11a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4"/><path d="M19 11V7"/><path d="M12 7V4"/></svg> ${t('tabFood')} <span class="tab-count" id="count-Food"></span>`;
+    const tabDrinks = qs('[data-tab="Cocktails / Drinks"]');
+    if (tabDrinks) tabDrinks.innerHTML = `<svg class="icon-svg" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M8 22h8M12 11v11M5 3l7 8 7-8H5z"/></svg> ${t('tabDrinks')} <span class="tab-count" id="count-Drinks"></span>`;
+    const tabDesserts = qs('[data-tab="Desserts"]');
+    if (tabDesserts) tabDesserts.innerHTML = `<svg class="icon-svg" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M12 2L2 19h20L12 2z"/><path d="M12 2v17"/><path d="M2 19h20"/><path d="M7 12h10"/></svg> ${t('tabDesserts')} <span class="tab-count" id="count-Desserts"></span>`;
+
+    // Search & sort
+    const si = qs('#search-input'); if (si) si.placeholder = t('searchPlaceholder');
+    const sort = qs('#sort-select');
+    if (sort) { sort.options[0].text=t('sortNewest'); sort.options[1].text=t('sortAZ'); sort.options[2].text=t('sortZA'); }
+
+    // Auth modal
+    set('.auth-header p', 'textContent', t('authSubtitle'));
+    const authTabs = qsa('.auth-tab');
+    if (authTabs[0]) authTabs[0].textContent = t('signInTab');
+    if (authTabs[1]) authTabs[1].textContent = t('signUpTab');
+    set('#panel-signin label', 'textContent', t('phoneLabel'));
+    set('#si-phone', 'placeholder', t('phonePlaceholder'));
+    set('#panel-signin .auth-btn', 'textContent', t('signInTab'));
+    const suLabels = qsa('#panel-signup label');
+    if (suLabels[0]) suLabels[0].textContent = t('nameLabel');
+    set('#su-name', 'placeholder', t('nameSUPlaceholder'));
+    if (suLabels[1]) suLabels[1].textContent = t('phoneLabel');
+    set('#su-phone', 'placeholder', t('phonePlaceholder'));
+    set('#panel-signup .auth-btn', 'textContent', t('createAccount'));
+
+    // Modals
+    const favHead = qs('#fav-overlay .modal-head h3');
+    if (favHead) favHead.innerHTML = `<svg style="width:18px;height:18px;stroke:#dc3c50;fill:#dc3c50;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${t('myFavs')}`;
+    set('#fav-overlay .modal-footer', 'textContent', t('yourTopPicks'));
+    const wlHead = qs('#wl-overlay .modal-head h3');
+    if (wlHead) wlHead.innerHTML = `<svg style="width:18px;height:18px;stroke:#dc3c50;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:4px" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${t('myWishlist')}`;
+    set('#wl-overlay .modal-footer', 'textContent', t('showChef'));
+    set('.req-head h3', 'textContent', t('requestTitle'));
+    const reqLabels = qsa('.req-form label');
+    if (reqLabels[0]) reqLabels[0].textContent = t('yourName');
+    set('#req-name', 'placeholder', t('namePlaceholder'));
+    if (reqLabels[1]) reqLabels[1].textContent = t('msgLabel');
+    set('#req-note', 'placeholder', t('msgPlaceholder'));
+    set('.req-submit', 'textContent', t('sendRequest'));
+    set('.req-confirm h4', 'textContent', t('requestSent'));
+
+    // Add modal
+    set('.add-modal-head h3', 'textContent', t('addCreation'));
+    const addLabels = qsa('.add-form .form-group label');
+    if (addLabels[0]) addLabels[0].textContent = t('name');
+    if (addLabels[1]) addLabels[1].textContent = t('category');
+    if (addLabels[2]) addLabels[2].textContent = t('photo');
+    if (addLabels[3]) addLabels[3].textContent = t('ingredientsLabel');
+    set('.form-submit', 'textContent', t('addToMenu'));
+
+    // Footer
+    set('.footer-tagline', 'textContent', t('footerTagline'));
+    set('.footer-copy', 'textContent', t('copyright'));
+    updateCounts();
+  } catch(e) {
+    console.warn('applyLang error:', e);
+  }
 }
 
 init();

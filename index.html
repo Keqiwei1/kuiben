@@ -979,10 +979,12 @@ async function submitRequest() {
     dish_name: item?.name || 'Unknown',
     note,
   }]);
-  const SHEET_URL='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
-  if (SHEET_URL!=='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-    fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dish:item?.name,note,time:new Date().toLocaleString()})});
-  }
+  const SHEET_URL='https://script.google.com/macros/s/AKfycbyEgUNGXgxb3QxuEZxLE_oPajC8RoK7iLcgeRpe64QcPDc13xLymDlAqSSYoUxoxYEwIw/exec';
+  fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    name, dish: item?.name, note,
+    phone: currentProfile?.phone || '',
+    time: new Date().toLocaleString()
+  })});
   document.getElementById('req-form-wrap').style.display='none';
   document.getElementById('req-confirm-text').textContent=t('requestConfirm', item?.name||'');
   document.getElementById('req-confirm').classList.add('show');

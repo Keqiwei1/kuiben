@@ -734,7 +734,9 @@ function render() {
   let filtered = activeTab === 'all' ? [...items] : items.filter(i => i.category === activeTab);
   if (q) filtered = filtered.filter(i =>
     (i.name||'').toLowerCase().includes(q) ||
-    (i.ingredients||[]).some(ing => ing.toLowerCase().includes(q))
+    (i.name_zh||'').includes(q) ||
+    (i.ingredients||[]).some(ing => ing.toLowerCase().includes(q)) ||
+    (i.ingredients_zh||[]).some(ing => ing.includes(q))
   );
 
   if (sortOrder === 'az') filtered.sort((a,b) => (a.name||'').localeCompare(b.name||''));

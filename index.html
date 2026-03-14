@@ -678,8 +678,13 @@ function hideLoading() {
 
 // ── LOAD ITEMS ──
 async function loadItems() {
-  const { data, error } = await sb.from('menu_items').select('*').order('created_at', { ascending: false });
-  if (error) throw error;
+  let { data, error } = await sb.from('menu_items').select('*').order('created_at', { ascending: false });
+  if (error) {
+    // Fallback: try without new columns in case migration hasn't run
+    const res = await sb.from('menu_items').select('id,name,category,ingredients,photo_url,notes,media,created_at').order('created_at', { ascending: false });
+    if (res.error) throw res.error;
+    data = res.data;
+  }
   if (data) items = data;
 }
 
@@ -1117,8 +1122,6 @@ document.getElementById('kuiben-tap-target').addEventListener('click',()=>{
   }
 });
 
-init();
-
 // ── i18n ──
 const i18n = {
   en: {
@@ -1285,6 +1288,8 @@ function applyLang() {
   document.querySelector('.footer-copy').textContent = t('copyright');
   updateCounts();
 }
+
+init();
 </script>
 </body>
 </html>

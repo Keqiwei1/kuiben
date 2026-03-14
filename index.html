@@ -997,27 +997,51 @@ async function submitRequest() {
 }
 
 // ── ADD ITEM ──
-let pendingPhoto=null;
+let pendingPhotoFile = null;
+
 function previewImg(e) {
-  const file=e.target.files[0]; if (!file) return;
-  const reader=new FileReader();
-  reader.onload=ev=>{pendingPhoto=ev.target.result;const p=document.getElementById('img-preview');p.src=pendingPhoto;p.classList.add('show');};
-  reader.readAsDataURL(file);
+  const file = e.target.files[0]; if (!file) return;
+  pendingPhotoFile = file;
+  const url = URL.createObjectURL(file);
+  const prev = document.getElementById('img-preview');
+  prev.src = url; prev.classList.add('show');
 }
+
+async function uploadPhoto(file) {
+  const ext  = file.name.split('.').pop();
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const { data, error } = await sb.storage.from('dish-photos').upload(path, file, { upsert: true });
+  if (error) throw error;
+  const { data: urlData } = sb.storage.from('dish-photos').getPublicUrl(path);
+  return urlData.publicUrl;
+}
+
 function openAdd()  { document.getElementById('add-overlay').classList.add('open'); }
 function closeAdd(e){ if (!e||e.target===document.getElementById('add-overlay')) document.getElementById('add-overlay').classList.remove('open'); }
 
 async function addItem() {
-  const name    = document.getElementById('f-name').value.trim();
-  const nameZh  = document.getElementById('f-name-zh').value.trim();
-  const cat     = document.getElementById('f-cat').value;
+  const name   = document.getElementById('f-name').value.trim();
+  const nameZh = document.getElementById('f-name-zh').value.trim();
+  const cat    = document.getElementById('f-cat').value;
   if (!name) { showToast(t('errItemName')); return; }
-  const ings    = document.getElementById('f-ingredients').value.split(',').map(s=>s.trim()).filter(Boolean);
-  const ingsZh  = document.getElementById('f-ingredients-zh').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const ings   = document.getElementById('f-ingredients').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const ingsZh = document.getElementById('f-ingredients-zh').value.split(',').map(s=>s.trim()).filter(Boolean);
+
+  let photoUrl = null;
+  if (pendingPhotoFile) {
+    try {
+      showToast('Uploading photo…');
+      photoUrl = await uploadPhoto(pendingPhotoFile);
+    } catch(e) {
+      console.error('Photo upload failed:', e);
+      showToast(t('errGeneric')); return;
+    }
+  }
+
   const { data, error } = await sb.from('menu_items').insert([{
     name, name_zh: nameZh||null, category: cat,
     ingredients: ings, ingredients_zh: ingsZh.length ? ingsZh : null,
-    photo_url: pendingPhoto||null
+    photo_url: photoUrl
   }]).select().single();
   if (error) { showToast(t('errGeneric')); return; }
   items.unshift(data);
@@ -1027,7 +1051,7 @@ async function addItem() {
   document.getElementById('f-ingredients-zh').value='';
   document.getElementById('f-photo').value='';
   document.getElementById('img-preview').classList.remove('show');
-  pendingPhoto=null;
+  pendingPhotoFile = null;
   closeAdd(); render(); showToast(t('added', name));
 }
 
@@ -1054,9 +1078,9 @@ async function saveEdit() {
   const { error } = await sb.from('menu_items').update({
     name, name_zh: nameZh||null, category: cat,
     ingredients: ings, ingredients_zh: ingsZh.length ? ingsZh : null
-  }).eq('id',editingId);
+  }).eq('id', editingId);
   if (error) { showToast(t('errGeneric')); return; }
-  const idx=items.findIndex(i=>i.id===editingId);
+  const idx = items.findIndex(i => i.id===editingId);
   if (idx!==-1) {
     items[idx].name=name; items[idx].name_zh=nameZh||null;
     items[idx].category=cat;

@@ -329,7 +329,24 @@
     .delete-btn { background:#fff0f0; border:1px solid #f4a0a0; color:#c0192b; border-radius:100px; padding:0.4rem 1rem; font-family:var(--font-body); font-size:0.82rem; cursor:pointer; transition:background 0.2s; }
     .delete-btn:hover { background:#ffe0e0; }
 
-    /* ── ADD FAB ── */
+    /* ── SUBCATEGORY FILTER BAR ── */
+    .subcat-bar { display:none; flex-wrap:wrap; gap:0.5rem; justify-content:center; padding:0.8rem 1.5rem 0.2rem; background:var(--bg); }
+    .subcat-bar.show { display:flex; }
+    .subcat-pill { background:var(--surface); border:1.5px solid var(--border); color:var(--muted); border-radius:100px; padding:0.3rem 0.9rem; font-size:0.78rem; font-family:var(--font-body); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+    .subcat-pill:hover { border-color:var(--brown); color:var(--brown); }
+    .subcat-pill.active { background:var(--brown); border-color:var(--brown); color:#fff; font-weight:700; }
+
+    /* ── SUBCATEGORY CHIP PICKER (in modal) ── */
+    .chip-picker { display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.3rem; }
+    .chip { background:var(--bg); border:1.5px solid var(--border); color:var(--muted); border-radius:100px; padding:0.25rem 0.75rem; font-size:0.78rem; font-family:var(--font-body); cursor:pointer; transition:all 0.18s; user-select:none; }
+    .chip:hover { border-color:var(--brown); color:var(--brown); }
+    .chip.selected { background:var(--brown); border-color:var(--brown); color:#fff; }
+    .chip.add-new { border-style:dashed; color:var(--amber); border-color:var(--amber); }
+    .chip.add-new:hover { background:var(--cream); }
+
+    /* ── CARD SUBCATEGORY TAGS ── */
+    .card-subcats { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.4rem; }
+    .card-subcat-tag { font-size:0.68rem; background:var(--cream); border:1px solid var(--blush); color:var(--brown); border-radius:100px; padding:0.1rem 0.55rem; }
     .add-fab { position:fixed; bottom:2rem; right:2rem; width:58px; height:58px; border-radius:50%; background:linear-gradient(135deg,#1a1a3e,#2a3a7a); color:#fff; border:none; font-size:1.6rem; cursor:pointer; box-shadow:0 6px 20px rgba(26,26,62,0.4); transition:transform 0.2s,box-shadow 0.2s,opacity 0.3s; z-index:100; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; }
     .add-fab.owner-visible { opacity:1; pointer-events:auto; }
     .add-fab:hover { transform:scale(1.1); box-shadow:0 10px 28px rgba(26,26,62,0.55); }
@@ -456,6 +473,9 @@
   </div>
 </div>
 
+<!-- SUBCATEGORY FILTER BAR -->
+<div class="subcat-bar" id="subcat-bar"></div>
+
 <!-- MAIN -->
 <main>
   <div class="section-head">
@@ -546,11 +566,16 @@
       <!-- 3. Category -->
       <div class="form-group">
         <label>Category</label>
-        <select id="f-cat">
+        <select id="f-cat" onchange="renderSubcatPicker('f-subcat-picker', this.value, [])">
           <option value="Food">Food</option>
           <option value="Cocktails / Drinks">Cocktails / Drinks</option>
           <option value="Desserts">Desserts</option>
         </select>
+      </div>
+      <!-- 3b. Subcategory -->
+      <div class="form-group">
+        <label>Subcategory <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(select all that apply)</span></label>
+        <div class="chip-picker" id="f-subcat-picker"></div>
       </div>
       <!-- 4. Photo / Video (multi) -->
       <div class="form-group">
@@ -575,11 +600,9 @@
 </div>
 
 <!-- CROP MODAL -->
-<div id="crop-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
-  <div style="position:relative;max-width:90vw;max-height:70vh;overflow:hidden;border-radius:12px">
-    <canvas id="crop-canvas" style="display:block;max-width:90vw;max-height:70vh"></canvas>
-    <div id="crop-box" style="position:absolute;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,0.5);cursor:move;touch-action:none"></div>
-  </div>
+<div id="crop-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
+  <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;font-family:sans-serif">Drag to move · Drag corners to resize</p>
+  <canvas id="crop-canvas" style="display:block;max-width:90vw;max-height:65vh;cursor:crosshair;border-radius:8px"></canvas>
   <div style="display:flex;gap:1rem">
     <button onclick="applyCrop()" style="background:#4a6fa5;color:#fff;border:none;border-radius:100px;padding:0.6rem 1.6rem;font-family:var(--font-body);font-size:0.9rem;cursor:pointer">Crop & Save</button>
     <button onclick="cancelCrop()" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:100px;padding:0.6rem 1.6rem;font-family:var(--font-body);font-size:0.9rem;cursor:pointer">Cancel</button>
@@ -610,11 +633,16 @@
       <!-- 3. Category -->
       <div class="form-group">
         <label>Category</label>
-        <select id="e-cat">
+        <select id="e-cat" onchange="renderSubcatPicker('e-subcat-picker', this.value, getSelectedSubcats('e-subcat-picker'))">
           <option value="Food">Food</option>
           <option value="Cocktails / Drinks">Cocktails / Drinks</option>
           <option value="Desserts">Desserts</option>
         </select>
+      </div>
+      <!-- 3b. Subcategory -->
+      <div class="form-group">
+        <label>Subcategory <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(select all that apply)</span></label>
+        <div class="chip-picker" id="e-subcat-picker"></div>
       </div>
       <!-- 4. Photos / Videos -->
       <div class="form-group">
@@ -674,6 +702,8 @@ let userFavorites    = [];
 let userWishlist     = [];
 let activeTab        = 'all';
 let searchQuery      = '';
+let activeSubcat     = null;   // currently selected subcategory filter
+let allSubcats       = {};     // { 'Food': ['Appetizer',...], 'Cocktails / Drinks': [...], ... }
 let pendingRequestId = null;
 let editingId        = null;
 let isOwner          = sessionStorage.getItem('kuiben-owner') === 'true';
@@ -696,7 +726,7 @@ async function init() {
 
   try {
     console.log('init: loading items...');
-    await loadItems();
+    await Promise.all([loadItems(), loadSubcats()]);
     console.log('init: items loaded', items.length);
   } catch(e) {
     console.warn('Failed to load items:', e);
@@ -772,6 +802,7 @@ function highlight(text, query) {
 
 // ── RENDER ──
 function render() {
+  renderSubcatBar();
   const grid         = document.getElementById('cards-grid');
   const resultsLabel = document.getElementById('search-results-label');
   const q = searchQuery.trim();
@@ -779,6 +810,7 @@ function render() {
   const showCat      = activeTab === 'all';
 
   let filtered = activeTab === 'all' ? [...items] : items.filter(i => i.category === activeTab);
+  if (activeSubcat) filtered = filtered.filter(i => (i.subcategories||[]).includes(activeSubcat));
   if (q) filtered = filtered.filter(i =>
     (i.name||'').toLowerCase().includes(q.toLowerCase()) ||
     (i.name_zh||'').includes(q) ||
@@ -826,6 +858,9 @@ function render() {
     const displayIngs = (lang==='zh' && item.ingredients_zh?.length) ? item.ingredients_zh : (item.ingredients||[]);
     const tags = displayIngs.map(ing => `<span class="ing-tag">${highlight(ing, searchQuery)}</span>`).join('');
     const subName = (lang==='zh' && item.name_zh) ? `<span style="font-size:0.7rem;color:var(--muted);font-weight:400;display:block;margin-top:1px">${item.name}</span>` : '';
+    const subcatTags = (item.subcategories||[]).length
+      ? `<div class="card-subcats">${(item.subcategories||[]).map(s=>`<span class="card-subcat-tag">${s}</span>`).join('')}</div>`
+      : '';
     const ownerCtrl = isOwner ? `
       <div class="owner-card-controls">
         <button class="owner-ctrl-btn edit-ctrl" onclick="openEdit(${item.id});event.stopPropagation()">✎</button>
@@ -839,6 +874,7 @@ function render() {
         <div class="card-body">
           <div class="card-name" onclick="openDetailPage(${item.id})">${highlight(displayName, searchQuery)}${subName}</div>
           <div class="card-category${showCat?' show':''}">${item.category}</div>
+          ${subcatTags}
           <div class="ing-divider"></div>
           <div class="ingredients-label">${t('ingredients')}</div>
           <div class="ingredients">${tags || '<span style="color:var(--muted);font-size:0.8rem">—</span>'}</div>
@@ -1082,68 +1118,127 @@ function removePhoto(i) {
 function openCrop(i) {
   cropIndex = i;
   cropMode = 'add';
+  const src = pendingPhotoFiles[i].url;
+  initCropUI(src);
+}
+
+function openEditCrop(i) {
+  cropIndex = i;
+  cropMode = 'edit';
+  const src = editMediaItems[i].src;
+  initCropUI(src);
+}
+
+function initCropUI(src) {
   const overlay = document.getElementById('crop-overlay');
   overlay.style.display = 'flex';
-  const canvas = document.getElementById('crop-canvas');
-  const ctx = canvas.getContext('2d');
   cropImg = new Image();
+  cropImg.crossOrigin = 'anonymous';
   cropImg.onload = () => {
-    const maxW = Math.min(window.innerWidth * 0.85, 700);
-    const maxH = window.innerHeight * 0.65;
+    const canvas = document.getElementById('crop-canvas');
+    const ctx = canvas.getContext('2d');
+    const maxW = Math.min(window.innerWidth * 0.88, 680);
+    const maxH = window.innerHeight * 0.62;
     const scale = Math.min(maxW / cropImg.width, maxH / cropImg.height, 1);
     canvas.width  = Math.round(cropImg.width  * scale);
     canvas.height = Math.round(cropImg.height * scale);
-    ctx.drawImage(cropImg, 0, 0, canvas.width, canvas.height);
-    // Default crop box: center square
-    const size = Math.min(canvas.width, canvas.height) * 0.8;
-    cropBoxX = (canvas.width  - size) / 2;
-    cropBoxY = (canvas.height - size) / 2;
-    cropBoxW = size; cropBoxH = size;
-    updateCropBox();
+    // Init crop box as center 80% square
+    cropBoxW = Math.min(canvas.width, canvas.height) * 0.8;
+    cropBoxH = cropBoxW;
+    cropBoxX = (canvas.width  - cropBoxW) / 2;
+    cropBoxY = (canvas.height - cropBoxH) / 2;
+    drawCropCanvas();
+    setupCropDrag(canvas);
   };
-  cropImg.src = pendingPhotoFiles[i].url;
+  cropImg.src = src;
 }
 
-function updateCropBox() {
+function drawCropCanvas() {
   const canvas = document.getElementById('crop-canvas');
-  const box = document.getElementById('crop-box');
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = rect.width  / canvas.width;
-  const scaleY = rect.height / canvas.height;
-  box.style.left   = (rect.left + cropBoxX * scaleX) - canvas.getBoundingClientRect().left + 'px';
-  box.style.top    = (rect.top  + cropBoxY * scaleY) - canvas.getBoundingClientRect().top  + 'px';
-  box.style.width  = (cropBoxW * scaleX) + 'px';
-  box.style.height = (cropBoxH * scaleY) + 'px';
-  // Position relative to overlay
-  const overlay = document.getElementById('crop-overlay');
-  const oRect = overlay.getBoundingClientRect();
-  const cRect = canvas.getBoundingClientRect();
-  box.style.left   = (cRect.left - oRect.left + cropBoxX * scaleX) + 'px';
-  box.style.top    = (cRect.top  - oRect.top  + cropBoxY * scaleY) + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Draw image
+  ctx.drawImage(cropImg, 0, 0, canvas.width, canvas.height);
+  // Darken outside crop
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Clear crop area
+  ctx.clearRect(cropBoxX, cropBoxY, cropBoxW, cropBoxH);
+  ctx.drawImage(cropImg, cropBoxX, cropBoxY, cropBoxW, cropBoxH, cropBoxX, cropBoxY, cropBoxW, cropBoxH);
+  // Crop border
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(cropBoxX, cropBoxY, cropBoxW, cropBoxH);
+  // Corner handles
+  const hs = 10;
+  ctx.fillStyle = '#fff';
+  [[cropBoxX, cropBoxY],[cropBoxX+cropBoxW-hs, cropBoxY],[cropBoxX, cropBoxY+cropBoxH-hs],[cropBoxX+cropBoxW-hs, cropBoxY+cropBoxH-hs]]
+    .forEach(([x,y]) => ctx.fillRect(x, y, hs, hs));
 }
 
-// Drag crop box
-document.addEventListener('DOMContentLoaded', () => {
-  const box = document.getElementById('crop-box');
-  if (!box) return;
-  let startMX, startMY, startBX, startBY;
-  box.addEventListener('pointerdown', e => {
-    isDragging = true; startMX = e.clientX; startMY = e.clientY;
-    startBX = cropBoxX; startBY = cropBoxY;
-    box.setPointerCapture(e.pointerId); e.preventDefault();
-  });
-  box.addEventListener('pointermove', e => {
-    if (!isDragging) return;
-    const canvas = document.getElementById('crop-canvas');
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    cropBoxX = Math.max(0, Math.min(canvas.width  - cropBoxW, startBX + (e.clientX - startMX) * scaleX));
-    cropBoxY = Math.max(0, Math.min(canvas.height - cropBoxH, startBY + (e.clientY - startMY) * scaleY));
-    updateCropBox();
-  });
-  box.addEventListener('pointerup', () => { isDragging = false; });
-});
+function setupCropDrag(canvas) {
+  let dragging = false, resizing = false, resizeCorner = null;
+  let startX, startY, startBX, startBY, startBW, startBH;
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: (t.clientX - r.left) * (canvas.width / r.width), y: (t.clientY - r.top) * (canvas.height / r.height) };
+  }
+
+  function getCorner(x, y) {
+    const hs = 16;
+    if (x < cropBoxX+hs && y < cropBoxY+hs) return 'tl';
+    if (x > cropBoxX+cropBoxW-hs && y < cropBoxY+hs) return 'tr';
+    if (x < cropBoxX+hs && y > cropBoxY+cropBoxH-hs) return 'bl';
+    if (x > cropBoxX+cropBoxW-hs && y > cropBoxY+cropBoxH-hs) return 'br';
+    return null;
+  }
+
+  function onDown(e) {
+    e.preventDefault();
+    const {x, y} = getPos(e);
+    const corner = getCorner(x, y);
+    startX=x; startY=y; startBX=cropBoxX; startBY=cropBoxY; startBW=cropBoxW; startBH=cropBoxH;
+    if (corner) { resizing=true; resizeCorner=corner; }
+    else if (x>cropBoxX && x<cropBoxX+cropBoxW && y>cropBoxY && y<cropBoxY+cropBoxH) { dragging=true; }
+  }
+
+  function onMove(e) {
+    e.preventDefault();
+    if (!dragging && !resizing) return;
+    const {x, y} = getPos(e);
+    const dx = x - startX, dy = y - startY;
+    if (dragging) {
+      cropBoxX = Math.max(0, Math.min(canvas.width  - cropBoxW, startBX + dx));
+      cropBoxY = Math.max(0, Math.min(canvas.height - cropBoxH, startBY + dy));
+    } else {
+      let nx=startBX, ny=startBY, nw=startBW, nh=startBH;
+      if (resizeCorner==='br') { nw=Math.max(40,startBW+dx); nh=Math.max(40,startBH+dy); }
+      if (resizeCorner==='tr') { nw=Math.max(40,startBW+dx); nh=Math.max(40,startBH-dy); ny=startBY+dy; }
+      if (resizeCorner==='bl') { nw=Math.max(40,startBW-dx); nh=Math.max(40,startBH+dy); nx=startBX+dx; }
+      if (resizeCorner==='tl') { nw=Math.max(40,startBW-dx); nh=Math.max(40,startBH-dy); nx=startBX+dx; ny=startBY+dy; }
+      if (nx>=0 && nx+nw<=canvas.width)  { cropBoxX=nx; cropBoxW=nw; }
+      if (ny>=0 && ny+nh<=canvas.height) { cropBoxY=ny; cropBoxH=nh; }
+    }
+    drawCropCanvas();
+  }
+
+  function onUp() { dragging=false; resizing=false; }
+
+  // Remove old listeners by cloning
+  const newCanvas = canvas.cloneNode(true);
+  canvas.parentNode.replaceChild(newCanvas, canvas);
+  newCanvas.getContext('2d').drawImage(cropImg, 0, 0, newCanvas.width, newCanvas.height);
+  drawCropCanvas();
+
+  newCanvas.addEventListener('mousedown', onDown);
+  newCanvas.addEventListener('mousemove', onMove);
+  newCanvas.addEventListener('mouseup', onUp);
+  newCanvas.addEventListener('touchstart', onDown, {passive:false});
+  newCanvas.addEventListener('touchmove', onMove, {passive:false});
+  newCanvas.addEventListener('touchend', onUp);
+}
 
 function applyCrop() {
   const canvas = document.getElementById('crop-canvas');
@@ -1205,7 +1300,10 @@ async function uploadPhoto(fileOrBlob, name='photo.jpg') {
   return urlData.publicUrl;
 }
 
-function openAdd()  { document.getElementById('add-overlay').classList.add('open'); }
+function openAdd() {
+  document.getElementById('add-overlay').classList.add('open');
+  renderSubcatPicker('f-subcat-picker', document.getElementById('f-cat').value, []);
+}
 function closeAdd(e){ if (!e||e.target===document.getElementById('add-overlay')) document.getElementById('add-overlay').classList.remove('open'); }
 
 async function addItem() {
@@ -1215,6 +1313,7 @@ async function addItem() {
   if (!name) { showToast(t('errItemName')); return; }
   const ings   = document.getElementById('f-ingredients').value.split(',').map(s=>s.trim()).filter(Boolean);
   const ingsZh = document.getElementById('f-ingredients-zh').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const subcats = getSelectedSubcats('f-subcat-picker');
 
   let photoUrl = null;
   let mediaArr = [];
@@ -1239,7 +1338,8 @@ async function addItem() {
     name, name_zh: nameZh||null, category: cat,
     ingredients: ings, ingredients_zh: ingsZh.length ? ingsZh : null,
     photo_url: photoUrl,
-    media: mediaArr.length ? mediaArr : null
+    media: mediaArr.length ? mediaArr : null,
+    subcategories: subcats.length ? subcats : null
   }]).select().single();
   if (error) { showToast(t('errGeneric')); return; }
   items.unshift(data);
@@ -1249,6 +1349,8 @@ async function addItem() {
   document.getElementById('f-ingredients-zh').value='';
   document.getElementById('f-photo').value='';
   document.getElementById('photo-previews').innerHTML='';
+  const fp = document.getElementById('f-subcat-picker');
+  if (fp) fp.innerHTML='';
   pendingPhotoFiles = [];
   closeAdd(); render(); showToast(t('added', name));
 }
@@ -1265,6 +1367,7 @@ function openEdit(id) {
   document.getElementById('e-cat').value = item.category;
   document.getElementById('e-ingredients').value = (item.ingredients||[]).join(', ');
   document.getElementById('e-ingredients-zh').value = (item.ingredients_zh||[]).join(', ');
+  renderSubcatPicker('e-subcat-picker', item.category, item.subcategories||[]);
 
   // Load existing media
   editMediaItems = [];
@@ -1305,27 +1408,9 @@ function addEditPhotos(e) {
 }
 
 function openEditCrop(i) {
-  // reuse crop system but target editMediaItems
   cropIndex = i;
   cropMode = 'edit';
-  const overlay = document.getElementById('crop-overlay');
-  overlay.style.display = 'flex';
-  const canvas = document.getElementById('crop-canvas');
-  cropImg = new Image();
-  cropImg.onload = () => {
-    const maxW = Math.min(window.innerWidth * 0.85, 700);
-    const maxH = window.innerHeight * 0.65;
-    const scale = Math.min(maxW / cropImg.width, maxH / cropImg.height, 1);
-    canvas.width  = Math.round(cropImg.width  * scale);
-    canvas.height = Math.round(cropImg.height * scale);
-    canvas.getContext('2d').drawImage(cropImg, 0, 0, canvas.width, canvas.height);
-    const size = Math.min(canvas.width, canvas.height) * 0.8;
-    cropBoxX = (canvas.width  - size) / 2;
-    cropBoxY = (canvas.height - size) / 2;
-    cropBoxW = size; cropBoxH = size;
-    updateCropBox();
-  };
-  cropImg.src = editMediaItems[i].src;
+  initCropUI(editMediaItems[i].src);
 }
 function closeEdit(e) {
   if (!e||e.target===document.getElementById('edit-overlay')) {
@@ -1341,6 +1426,7 @@ async function saveEdit() {
   const ings    = document.getElementById('e-ingredients').value.split(',').map(s=>s.trim()).filter(Boolean);
   const ingsZh  = document.getElementById('e-ingredients-zh').value.split(',').map(s=>s.trim()).filter(Boolean);
   const cat     = document.getElementById('e-cat').value;
+  const subcats = getSelectedSubcats('e-subcat-picker');
 
   // Upload any new photos
   let finalMedia = [];
@@ -1363,14 +1449,16 @@ async function saveEdit() {
     name, name_zh: nameZh||null, category: cat,
     ingredients: ings, ingredients_zh: ingsZh.length ? ingsZh : null,
     photo_url: photoUrl,
-    media: finalMedia.length ? finalMedia : null
+    media: finalMedia.length ? finalMedia : null,
+    subcategories: subcats.length ? subcats : null
   }).eq('id', editingId);
   if (error) { showToast(t('errGeneric')); return; }
   const idx = items.findIndex(i => i.id===editingId);
   if (idx!==-1) {
     items[idx] = { ...items[idx], name, name_zh: nameZh||null, category: cat,
       ingredients: ings, ingredients_zh: ingsZh.length?ingsZh:null,
-      photo_url: photoUrl, media: finalMedia.length?finalMedia:null };
+      photo_url: photoUrl, media: finalMedia.length?finalMedia:null,
+      subcategories: subcats.length?subcats:null };
   }
   editMediaItems = [];
   closeEdit(); render(); showToast(t('updated'));
@@ -1624,7 +1712,9 @@ document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     tab.classList.add('active');
-    activeTab=tab.dataset.tab;
+    activeTab = tab.dataset.tab;
+    activeSubcat = null;
+    renderSubcatBar();
     render();
   });
 });
@@ -1849,6 +1939,67 @@ function applyLang() {
   } catch(e) {
     console.warn('applyLang error:', e);
   }
+}
+
+// ── SUBCATEGORIES ──
+async function loadSubcats() {
+  const { data } = await sb.from('subcategories').select('category, name').order('id');
+  if (!data) return;
+  allSubcats = {};
+  data.forEach(r => {
+    if (!allSubcats[r.category]) allSubcats[r.category] = [];
+    allSubcats[r.category].push(r.name);
+  });
+}
+
+function renderSubcatBar() {
+  const bar = document.getElementById('subcat-bar');
+  if (activeTab === 'all' || !allSubcats[activeTab]?.length) {
+    bar.classList.remove('show'); return;
+  }
+  const cats = allSubcats[activeTab] || [];
+  bar.innerHTML = cats.map(c =>
+    `<button class="subcat-pill${activeSubcat===c?' active':''}" onclick="selectSubcat('${c}')">${c}</button>`
+  ).join('');
+  bar.classList.add('show');
+}
+
+function selectSubcat(name) {
+  activeSubcat = activeSubcat === name ? null : name;
+  renderSubcatBar();
+  render();
+}
+
+function renderSubcatPicker(pickerId, category, selected=[]) {
+  const picker = document.getElementById(pickerId);
+  if (!picker) return;
+  const cats = allSubcats[category] || [];
+  picker.innerHTML = cats.map(c =>
+    `<span class="chip${selected.includes(c)?' selected':''}" onclick="toggleChip(this,'${c}')">${c}</span>`
+  ).join('') + `<span class="chip add-new" onclick="addNewSubcat('${category}','${pickerId}')">+ New</span>`;
+}
+
+function toggleChip(el, name) {
+  el.classList.toggle('selected');
+}
+
+function getSelectedSubcats(pickerId) {
+  const picker = document.getElementById(pickerId);
+  if (!picker) return [];
+  return Array.from(picker.querySelectorAll('.chip.selected')).map(c => c.textContent);
+}
+
+async function addNewSubcat(category, pickerId) {
+  const name = prompt(`New subcategory for ${category}:`);
+  if (!name || !name.trim()) return;
+  const trimmed = name.trim();
+  // Save to Supabase
+  await sb.from('subcategories').insert([{ category, name: trimmed }]).select();
+  if (!allSubcats[category]) allSubcats[category] = [];
+  if (!allSubcats[category].includes(trimmed)) allSubcats[category].push(trimmed);
+  // Re-render picker with new chip selected
+  const current = getSelectedSubcats(pickerId);
+  renderSubcatPicker(pickerId, category, [...current, trimmed]);
 }
 
 init();

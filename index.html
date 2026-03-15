@@ -577,7 +577,7 @@
         <label>Subcategory <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(select all that apply)</span></label>
         <div class="chip-picker" id="f-subcat-picker"></div>
       </div>
-      <!-- 4. Photo / Video (multi) -->
+      <!-- 4. Photo / Video -->
       <div class="form-group">
         <label>Photo / Video</label>
         <input type="file" id="f-photo" accept="image/*,video/*" multiple onchange="previewImgs(event)" style="margin-bottom:0.5rem"/>
@@ -683,6 +683,11 @@
       </a>
     </div>
     <div class="footer-divider"></div>
+    <div style="font-size:0.72rem;color:rgba(255,255,255,0.35);text-align:center;line-height:1.7;max-width:560px">
+      All content on this site — including the Kuiben name, logo, dish names, recipes, concepts, and photography — is the original creative work of Kuiben Kitchen &amp; Bar and is protected by copyright. No content may be reproduced, copied, or used for any purpose without prior written permission.
+      <br/>
+      本网站所有内容，包括 Kuiben 名称、标志、菜品名称、食谱、创意概念及摄影作品，均为 Kuiben Kitchen &amp; Bar 的原创作品，受版权法保护。未经书面授权，任何内容不得以任何形式复制、抄袭或使用。
+    </div>
     <div class="footer-copy">© 2026 Kuiben Kitchen & Bar · atkuiben.com</div>
   </div>
 </footer>
@@ -1118,15 +1123,13 @@ function removePhoto(i) {
 function openCrop(i) {
   cropIndex = i;
   cropMode = 'add';
-  const src = pendingPhotoFiles[i].url;
-  initCropUI(src);
+  initCropUI(pendingPhotoFiles[i].url);
 }
 
 function openEditCrop(i) {
   cropIndex = i;
   cropMode = 'edit';
-  const src = editMediaItems[i].src;
-  initCropUI(src);
+  initCropUI(editMediaItems[i].src);
 }
 
 function initCropUI(src) {
@@ -1136,109 +1139,105 @@ function initCropUI(src) {
   cropImg.crossOrigin = 'anonymous';
   cropImg.onload = () => {
     const canvas = document.getElementById('crop-canvas');
-    const ctx = canvas.getContext('2d');
     const maxW = Math.min(window.innerWidth * 0.88, 680);
     const maxH = window.innerHeight * 0.62;
     const scale = Math.min(maxW / cropImg.width, maxH / cropImg.height, 1);
     canvas.width  = Math.round(cropImg.width  * scale);
     canvas.height = Math.round(cropImg.height * scale);
-    // Init crop box as center 80% square
     cropBoxW = Math.min(canvas.width, canvas.height) * 0.8;
     cropBoxH = cropBoxW;
     cropBoxX = (canvas.width  - cropBoxW) / 2;
     cropBoxY = (canvas.height - cropBoxH) / 2;
     drawCropCanvas();
-    setupCropDrag(canvas);
   };
   cropImg.src = src;
 }
 
 function drawCropCanvas() {
   const canvas = document.getElementById('crop-canvas');
+  if (!canvas || !cropImg) return;
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // Draw image
   ctx.drawImage(cropImg, 0, 0, canvas.width, canvas.height);
-  // Darken outside crop
-  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillStyle = 'rgba(0,0,0,0.52)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  // Clear crop area
   ctx.clearRect(cropBoxX, cropBoxY, cropBoxW, cropBoxH);
   ctx.drawImage(cropImg, cropBoxX, cropBoxY, cropBoxW, cropBoxH, cropBoxX, cropBoxY, cropBoxW, cropBoxH);
-  // Crop border
   ctx.strokeStyle = '#fff';
   ctx.lineWidth = 2;
   ctx.strokeRect(cropBoxX, cropBoxY, cropBoxW, cropBoxH);
-  // Corner handles
   const hs = 10;
   ctx.fillStyle = '#fff';
-  [[cropBoxX, cropBoxY],[cropBoxX+cropBoxW-hs, cropBoxY],[cropBoxX, cropBoxY+cropBoxH-hs],[cropBoxX+cropBoxW-hs, cropBoxY+cropBoxH-hs]]
-    .forEach(([x,y]) => ctx.fillRect(x, y, hs, hs));
+  [[cropBoxX,cropBoxY],[cropBoxX+cropBoxW-hs,cropBoxY],[cropBoxX,cropBoxY+cropBoxH-hs],[cropBoxX+cropBoxW-hs,cropBoxY+cropBoxH-hs]]
+    .forEach(([x,y]) => ctx.fillRect(x,y,hs,hs));
 }
 
-function setupCropDrag(canvas) {
-  let dragging = false, resizing = false, resizeCorner = null;
-  let startX, startY, startBX, startBY, startBW, startBH;
+// Crop interaction — pointer events on canvas
+(function setupCropInteraction() {
+  let drag = false, resize = false, corner = null;
+  let sx, sy, sbx, sby, sbw, sbh;
 
   function getPos(e) {
+    const canvas = document.getElementById('crop-canvas');
+    if (!canvas) return {x:0,y:0};
     const r = canvas.getBoundingClientRect();
     const t = e.touches ? e.touches[0] : e;
-    return { x: (t.clientX - r.left) * (canvas.width / r.width), y: (t.clientY - r.top) * (canvas.height / r.height) };
+    return {
+      x: (t.clientX - r.left) * canvas.width  / r.width,
+      y: (t.clientY - r.top)  * canvas.height / r.height
+    };
   }
 
   function getCorner(x, y) {
-    const hs = 16;
-    if (x < cropBoxX+hs && y < cropBoxY+hs) return 'tl';
-    if (x > cropBoxX+cropBoxW-hs && y < cropBoxY+hs) return 'tr';
-    if (x < cropBoxX+hs && y > cropBoxY+cropBoxH-hs) return 'bl';
+    const hs = 18;
+    if (x < cropBoxX+hs   && y < cropBoxY+hs)              return 'tl';
+    if (x > cropBoxX+cropBoxW-hs && y < cropBoxY+hs)       return 'tr';
+    if (x < cropBoxX+hs   && y > cropBoxY+cropBoxH-hs)     return 'bl';
     if (x > cropBoxX+cropBoxW-hs && y > cropBoxY+cropBoxH-hs) return 'br';
     return null;
   }
 
   function onDown(e) {
+    if (document.getElementById('crop-overlay').style.display === 'none') return;
     e.preventDefault();
-    const {x, y} = getPos(e);
-    const corner = getCorner(x, y);
-    startX=x; startY=y; startBX=cropBoxX; startBY=cropBoxY; startBW=cropBoxW; startBH=cropBoxH;
-    if (corner) { resizing=true; resizeCorner=corner; }
-    else if (x>cropBoxX && x<cropBoxX+cropBoxW && y>cropBoxY && y<cropBoxY+cropBoxH) { dragging=true; }
+    const {x,y} = getPos(e);
+    corner = getCorner(x,y);
+    sx=x; sy=y; sbx=cropBoxX; sby=cropBoxY; sbw=cropBoxW; sbh=cropBoxH;
+    if (corner) { resize=true; }
+    else if (x>cropBoxX && x<cropBoxX+cropBoxW && y>cropBoxY && y<cropBoxY+cropBoxH) { drag=true; }
   }
 
   function onMove(e) {
+    if (!drag && !resize) return;
     e.preventDefault();
-    if (!dragging && !resizing) return;
-    const {x, y} = getPos(e);
-    const dx = x - startX, dy = y - startY;
-    if (dragging) {
-      cropBoxX = Math.max(0, Math.min(canvas.width  - cropBoxW, startBX + dx));
-      cropBoxY = Math.max(0, Math.min(canvas.height - cropBoxH, startBY + dy));
+    const canvas = document.getElementById('crop-canvas');
+    if (!canvas) return;
+    const {x,y} = getPos(e);
+    const dx=x-sx, dy=y-sy;
+    if (drag) {
+      cropBoxX = Math.max(0, Math.min(canvas.width -cropBoxW, sbx+dx));
+      cropBoxY = Math.max(0, Math.min(canvas.height-cropBoxH, sby+dy));
     } else {
-      let nx=startBX, ny=startBY, nw=startBW, nh=startBH;
-      if (resizeCorner==='br') { nw=Math.max(40,startBW+dx); nh=Math.max(40,startBH+dy); }
-      if (resizeCorner==='tr') { nw=Math.max(40,startBW+dx); nh=Math.max(40,startBH-dy); ny=startBY+dy; }
-      if (resizeCorner==='bl') { nw=Math.max(40,startBW-dx); nh=Math.max(40,startBH+dy); nx=startBX+dx; }
-      if (resizeCorner==='tl') { nw=Math.max(40,startBW-dx); nh=Math.max(40,startBH-dy); nx=startBX+dx; ny=startBY+dy; }
-      if (nx>=0 && nx+nw<=canvas.width)  { cropBoxX=nx; cropBoxW=nw; }
-      if (ny>=0 && ny+nh<=canvas.height) { cropBoxY=ny; cropBoxH=nh; }
+      let nx=sbx, ny=sby, nw=sbw, nh=sbh;
+      if (corner==='br'){nw=Math.max(40,sbw+dx);nh=Math.max(40,sbh+dy);}
+      if (corner==='tr'){nw=Math.max(40,sbw+dx);nh=Math.max(40,sbh-dy);ny=sby+dy;}
+      if (corner==='bl'){nw=Math.max(40,sbw-dx);nh=Math.max(40,sbh+dy);nx=sbx+dx;}
+      if (corner==='tl'){nw=Math.max(40,sbw-dx);nh=Math.max(40,sbh-dy);nx=sbx+dx;ny=sby+dy;}
+      if (nx>=0 && nx+nw<=canvas.width) {cropBoxX=nx;cropBoxW=nw;}
+      if (ny>=0 && ny+nh<=canvas.height){cropBoxY=ny;cropBoxH=nh;}
     }
     drawCropCanvas();
   }
 
-  function onUp() { dragging=false; resizing=false; }
+  function onUp() { drag=false; resize=false; corner=null; }
 
-  // Remove old listeners by cloning
-  const newCanvas = canvas.cloneNode(true);
-  canvas.parentNode.replaceChild(newCanvas, canvas);
-  newCanvas.getContext('2d').drawImage(cropImg, 0, 0, newCanvas.width, newCanvas.height);
-  drawCropCanvas();
-
-  newCanvas.addEventListener('mousedown', onDown);
-  newCanvas.addEventListener('mousemove', onMove);
-  newCanvas.addEventListener('mouseup', onUp);
-  newCanvas.addEventListener('touchstart', onDown, {passive:false});
-  newCanvas.addEventListener('touchmove', onMove, {passive:false});
-  newCanvas.addEventListener('touchend', onUp);
-}
+  document.addEventListener('mousedown',  onDown);
+  document.addEventListener('mousemove',  onMove);
+  document.addEventListener('mouseup',    onUp);
+  document.addEventListener('touchstart', onDown, {passive:false});
+  document.addEventListener('touchmove',  onMove, {passive:false});
+  document.addEventListener('touchend',   onUp);
+})();
 
 function applyCrop() {
   const canvas = document.getElementById('crop-canvas');
@@ -1248,19 +1247,17 @@ function applyCrop() {
   out.width  = Math.round(cropBoxW * scaleX);
   out.height = Math.round(cropBoxH * scaleY);
   out.getContext('2d').drawImage(cropImg,
-    cropBoxX * scaleX, cropBoxY * scaleY, out.width, out.height,
+    cropBoxX*scaleX, cropBoxY*scaleY, out.width, out.height,
     0, 0, out.width, out.height
   );
   out.toBlob(blob => {
     if (cropMode === 'edit') {
       editMediaItems[cropIndex].croppedBlob = blob;
       editMediaItems[cropIndex].src = URL.createObjectURL(blob);
-      cancelCrop();
-      renderEditPreviews();
+      cancelCrop(); renderEditPreviews();
     } else {
       pendingPhotoFiles[cropIndex].croppedBlob = blob;
-      cancelCrop();
-      renderPhotoPreviews();
+      cancelCrop(); renderPhotoPreviews();
     }
   }, 'image/jpeg', 0.92);
 }
@@ -1942,13 +1939,18 @@ function applyLang() {
     set('.req-submit', 'textContent', t('sendRequest'));
     set('.req-confirm h4', 'textContent', t('requestSent'));
 
-    // Add modal
+    // Add modal — target by label's next sibling element type, not index
     set('.add-modal-head h3', 'textContent', t('addCreation'));
-    const addLabels = qsa('.add-form .form-group label');
-    if (addLabels[0]) addLabels[0].textContent = t('name');
-    if (addLabels[1]) addLabels[1].textContent = t('category');
-    if (addLabels[2]) addLabels[2].textContent = t('photo');
-    if (addLabels[3]) addLabels[3].textContent = t('ingredientsLabel');
+    // Use data-label attributes approach — just set the ones we can safely find
+    const addForm = document.querySelector('#add-modal .add-form');
+    if (addForm) {
+      const groups = addForm.querySelectorAll('.form-group');
+      // groups[0]=Name, [1]=名字(skip), [2]=Category, [3]=Subcategory(skip), [4]=Photo/Video, [5]=Main Ingredients, [6]=主要材料(skip)
+      if (groups[0]) groups[0].querySelector('label').childNodes[0].textContent = t('name');
+      if (groups[2]) groups[2].querySelector('label').childNodes[0].textContent = t('category') + ' ';
+      if (groups[4]) groups[4].querySelector('label').childNodes[0].textContent = t('photo') + ' ';
+      if (groups[5]) groups[5].querySelector('label').childNodes[0].textContent = t('ingredientsLabel');
+    }
     set('.form-submit', 'textContent', t('addToMenu'));
 
     // Footer

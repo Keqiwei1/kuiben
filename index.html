@@ -1494,14 +1494,32 @@ function openDetailPage(id) {
     return `<div class="dp-thumb ${i===0?'active':''}" onclick="switchMedia(${i})">${p}</div>`;
   }).join('') : '';
 
-  const ingsHTML = (item.ingredients||[]).map(i=>`<span class="dp-ing">${i}</span>`).join('');
-  const ingsZhHTML = (item.ingredients_zh||[]).map(i=>`<span class="dp-ing">${i}</span>`).join('');
-  const uploadSection = isOwner ? `<label class="dp-upload-area"><input type="file" id="media-upload" accept="image/*,video/*" multiple onchange="addMedia(event)"/>+ Add photos or videos</label>` : '';
+  const isZh = lang === 'zh';
+  const displayName = (isZh && item.name_zh) ? item.name_zh : item.name;
+  const displayNameSub = (isZh && item.name_zh) ? item.name : item.name_zh;
+  const displayIngs = (isZh && item.ingredients_zh?.length) ? item.ingredients_zh : (item.ingredients||[]);
+  const ingsLabel = isZh ? '主要食材' : 'Main Ingredients';
+  const favLabel = isZh ? '收藏' : 'Favorite';
+  const favActiveLabel = isZh ? '已收藏' : 'Favorited';
+  const wlLabel = isZh ? '想吃单' : 'Wishlist';
+  const wlActiveLabel = isZh ? '已加入' : 'In Wishlist';
+  const reqLabel = isZh ? '想要食谱' : 'Request Recipe';
+  const reqFormTitle = isZh ? '请求食谱' : 'Request this recipe';
+  const namePlaceholder = isZh ? '你的名字' : 'Your name';
+  const notePlaceholder = isZh ? '有什么特别要求吗？' : 'Any notes or dietary preferences…';
+  const sendLabel = isZh ? '发送请求' : 'Send Request';
+  const reqSentLabel = isZh ? '请求已发送！✓' : 'Request sent! ✓';
+  const backLabel = isZh ? '← 返回' : '← Back';
+  const addMediaLabel = isZh ? '+ 添加照片或视频' : '+ Add photos or videos';
+
+  const ingsHTML = displayIngs.map(i=>`<span class="dp-ing">${i}</span>`).join('');
+
+  const uploadSection = isOwner ? `<label class="dp-upload-area"><input type="file" id="media-upload" accept="image/*,video/*" multiple onchange="addMedia(event)"/>${addMediaLabel}</label>` : '';
 
   const html = `<!DOCTYPE html>
-<html lang="en"><head>
+<html lang="${isZh?'zh-CN':'en'}"><head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${item.name} — Kuiben</title>
+<title>${displayName} — Kuiben</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Lato:wght@300;400;700&family=Syne:wght@600&family=Noto+Sans+SC:wght@300&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
 <style>
@@ -1511,8 +1529,8 @@ body{background:#fdf8f2;font-family:'Lato',sans-serif;color:#1a1228;min-height:1
 .dp-back{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:100px;padding:0.4rem 1rem;font-size:0.82rem;cursor:pointer;font-family:'Lato',sans-serif;transition:background 0.2s}
 .dp-back:hover{background:rgba(255,255,255,0.25)}
 .dp-wrap{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
-.dp-name{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;color:#1a1a3e;margin-bottom:0.2rem}
-.dp-name-zh{font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:1rem;color:#7a6a6a;margin-bottom:0.4rem;letter-spacing:0.05em}
+.dp-name{font-family:${isZh?"'Noto Sans SC'"+",'Playfair Display'":'\'Playfair Display\',serif'};font-size:clamp(2rem,5vw,3rem);font-weight:700;color:#1a1a3e;margin-bottom:0.2rem;line-height:1.15}
+.dp-name-sub{font-family:'Lato',sans-serif;font-size:0.9rem;color:#9a8a8a;margin-bottom:0.4rem;letter-spacing:0.03em}
 .dp-cat{font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;color:#dc3c50;font-weight:700;margin-bottom:2rem}
 .dp-layout{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
 @media(max-width:680px){.dp-layout{grid-template-columns:1fr}}
@@ -1552,12 +1570,12 @@ body{background:#fdf8f2;font-family:'Lato',sans-serif;color:#1a1228;min-height:1
 </head>
 <body>
 <div class="dp-header">
-  <button class="dp-back" onclick="window.close()">← Back</button>
+  <button class="dp-back" onclick="window.close()">${backLabel}</button>
   <span style="font-family:'Syne',sans-serif;color:#fff;font-size:0.95rem;opacity:0.8">Kuiben Kitchen & Bar</span>
 </div>
 <div class="dp-wrap">
-  <div class="dp-name">${item.name}</div>
-  ${item.name_zh ? `<div class="dp-name-zh">${item.name_zh}</div>` : ''}
+  <div class="dp-name">${displayName}</div>
+  ${displayNameSub ? `<div class="dp-name-sub">${displayNameSub}</div>` : ''}
   <div class="dp-cat">${item.category}</div>
   <div class="dp-layout">
     <div>
@@ -1566,30 +1584,29 @@ body{background:#fdf8f2;font-family:'Lato',sans-serif;color:#1a1228;min-height:1
       ${uploadSection}
     </div>
     <div>
-      <div class="dp-section-label">Main Ingredients</div>
+      <div class="dp-section-label">${ingsLabel}</div>
       <div class="dp-ings">${ingsHTML || '<span style="color:#c4b0d8">—</span>'}</div>
-      ${ingsZhHTML ? `<div class="dp-section-label" style="margin-top:0">主要食材</div><div class="dp-ings">${ingsZhHTML}</div>` : ''}
       <div class="dp-actions">
         <button class="dp-btn dp-btn-fav${isFav?' active':''}" id="btn-fav" onclick="toggleFav()">
           <svg viewBox="0 0 24 24" style="fill:${isFav?'#dc3c50':'none'}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          ${isFav ? 'Favorited' : 'Favorite'}
+          <span id="fav-label">${isFav ? favActiveLabel : favLabel}</span>
         </button>
         <button class="dp-btn dp-btn-wl${isWl?' active':''}" id="btn-wl" onclick="toggleWl()">
           <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          ${isWl ? 'In Wishlist' : 'Wishlist'}
+          <span id="wl-label">${isWl ? wlActiveLabel : wlLabel}</span>
         </button>
         <button class="dp-btn dp-btn-req" onclick="toggleReqForm()">
           <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Request Recipe
+          ${reqLabel}
         </button>
       </div>
       <div class="dp-req-form" id="req-form">
-        <h4>Request this recipe</h4>
-        <input type="text" id="req-name" placeholder="Your name" value="${currentProfile ? currentProfile.name : ''}"/>
-        <textarea id="req-note" rows="3" placeholder="Any notes or dietary preferences…"></textarea>
-        <button class="dp-req-submit" onclick="submitReq()">Send Request</button>
+        <h4>${reqFormTitle}</h4>
+        <input type="text" id="req-name" placeholder="${namePlaceholder}" value="${currentProfile ? currentProfile.name : ''}"/>
+        <textarea id="req-note" rows="3" placeholder="${notePlaceholder}"></textarea>
+        <button class="dp-req-submit" onclick="submitReq()">${sendLabel}</button>
       </div>
-      <div class="dp-confirm" id="req-confirm">Request sent! ✓</div>
+      <div class="dp-confirm" id="req-confirm">${reqSentLabel}</div>
     </div>
   </div>
 </div>
@@ -1640,34 +1657,36 @@ function refreshMedia(){
 }
 
 async function toggleFav(){
-  if(!profileId){showToast('Sign in to save favourites');return;}
+  if(!profileId){showToast('${isZh?'请先登录':'Sign in to save'}');return;}
   const btn=document.getElementById('btn-fav');
+  const lbl=document.getElementById('fav-label');
   if(!isFav){
     await sb.from('favorites').insert([{profile_id:profileId,item_id:itemId}]);
     isFav=true;btn.querySelector('svg').style.fill='#dc3c50';
-    btn.childNodes[btn.childNodes.length-1].textContent=' Favorited';
-    btn.classList.add('active');showToast('Added to Favorites!');
+    if(lbl) lbl.textContent='${favActiveLabel}';
+    btn.classList.add('active');showToast('${isZh?'已收藏！':'Added to Favorites!'}');
   }else{
     await sb.from('favorites').delete().eq('profile_id',profileId).eq('item_id',itemId);
     isFav=false;btn.querySelector('svg').style.fill='none';
-    btn.childNodes[btn.childNodes.length-1].textContent=' Favorite';
-    btn.classList.remove('active');showToast('Removed from Favorites');
+    if(lbl) lbl.textContent='${favLabel}';
+    btn.classList.remove('active');showToast('${isZh?'已取消收藏':'Removed from Favorites'}');
   }
 }
 
 async function toggleWl(){
-  if(!profileId){showToast('Sign in to save wishlist');return;}
+  if(!profileId){showToast('${isZh?'请先登录':'Sign in to save'}');return;}
   const btn=document.getElementById('btn-wl');
+  const lbl=document.getElementById('wl-label');
   if(!isWl){
     await sb.from('wishlists').insert([{profile_id:profileId,item_id:itemId}]);
     isWl=true;
-    btn.childNodes[btn.childNodes.length-1].textContent=' In Wishlist';
-    btn.classList.add('active');showToast('Added to Wishlist!');
+    if(lbl) lbl.textContent='${wlActiveLabel}';
+    btn.classList.add('active');showToast('${isZh?'已加入想吃单！':'Added to Wishlist!'}');
   }else{
     await sb.from('wishlists').delete().eq('profile_id',profileId).eq('item_id',itemId);
     isWl=false;
-    btn.childNodes[btn.childNodes.length-1].textContent=' Wishlist';
-    btn.classList.remove('active');showToast('Removed from Wishlist');
+    if(lbl) lbl.textContent='${wlLabel}';
+    btn.classList.remove('active');showToast('${isZh?'已移出想吃单':'Removed from Wishlist'}');
   }
 }
 
@@ -1675,7 +1694,7 @@ function toggleReqForm(){document.getElementById('req-form').classList.toggle('s
 
 async function submitReq(){
   const name=document.getElementById('req-name').value.trim();
-  if(!name){showToast('Please enter your name');return;}
+  if(!name){showToast('${isZh?'请输入你的名字':'Please enter your name'}');return;}
   const note=document.getElementById('req-note').value.trim();
   await sb.from('requests').insert([{profile_id:profileId,guest_name:name,item_id:itemId,dish_name:'${item.name.replace(/'/g, "\\'")}',note}]);
   fetch('https://script.google.com/macros/s/AKfycbyEgUNGXgxb3QxuEZxLE_oPajC8RoK7iLcgeRpe64QcPDc13xLymDlAqSSYoUxoxYEwIw/exec',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dish:'${item.name.replace(/'/g, "\\'")}',note,time:new Date().toLocaleString()})});

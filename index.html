@@ -533,11 +533,17 @@
       <button class="modal-close" onclick="closeAdd()">✕</button>
     </div>
     <div class="add-form">
-      <div class="form-group"><label>Name</label><input type="text" id="f-name" placeholder="e.g. Spicy Mango Margarita"/></div>
+      <!-- 1. Name -->
       <div class="form-group">
-        <label style="display:flex;align-items:center;gap:0.4rem">中文名称 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese name)</span></label>
+        <label>Name</label>
+        <input type="text" id="f-name" placeholder="e.g. Spicy Mango Margarita"/>
+      </div>
+      <!-- 2. 名字 -->
+      <div class="form-group">
+        <label>名字 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese name)</span></label>
         <input type="text" id="f-name-zh" placeholder="例如：芒果玛格丽特"/>
       </div>
+      <!-- 3. Category -->
       <div class="form-group">
         <label>Category</label>
         <select id="f-cat">
@@ -546,18 +552,37 @@
           <option value="Desserts">Desserts</option>
         </select>
       </div>
+      <!-- 4. Photo / Video (multi) -->
       <div class="form-group">
-        <label>Photo</label>
-        <input type="file" id="f-photo" accept="image/*" onchange="previewImg(event)"/>
-        <img class="img-preview" id="img-preview" alt="Preview"/>
+        <label>Photo / Video</label>
+        <input type="file" id="f-photo" accept="image/*,video/*" multiple onchange="previewImgs(event)" style="margin-bottom:0.5rem"/>
+        <div id="photo-previews" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.3rem"></div>
+        <p style="font-size:0.72rem;color:var(--muted);margin-top:0.4rem">First photo will be the cover. Tap a photo to crop it.</p>
       </div>
-      <div class="form-group"><label>Ingredients (comma-separated)</label><textarea id="f-ingredients" rows="2" placeholder="e.g. Mango, Lime, Tequila"></textarea></div>
+      <!-- 5. Main Ingredients -->
       <div class="form-group">
-        <label style="display:flex;align-items:center;gap:0.4rem">主要食材 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese ingredients)</span></label>
+        <label>Main Ingredients <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(comma-separated)</span></label>
+        <textarea id="f-ingredients" rows="2" placeholder="e.g. Mango, Lime, Tequila"></textarea>
+      </div>
+      <!-- 6. 主要材料 -->
+      <div class="form-group">
+        <label>主要材料 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese ingredients)</span></label>
         <textarea id="f-ingredients-zh" rows="2" placeholder="例如：芒果，青柠，龙舌兰酒"></textarea>
       </div>
       <button class="form-submit" onclick="addItem()">Add to Menu</button>
     </div>
+  </div>
+</div>
+
+<!-- CROP MODAL -->
+<div id="crop-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
+  <div style="position:relative;max-width:90vw;max-height:70vh;overflow:hidden;border-radius:12px">
+    <canvas id="crop-canvas" style="display:block;max-width:90vw;max-height:70vh"></canvas>
+    <div id="crop-box" style="position:absolute;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,0.5);cursor:move;touch-action:none"></div>
+  </div>
+  <div style="display:flex;gap:1rem">
+    <button onclick="applyCrop()" style="background:#4a6fa5;color:#fff;border:none;border-radius:100px;padding:0.6rem 1.6rem;font-family:var(--font-body);font-size:0.9rem;cursor:pointer">Crop & Save</button>
+    <button onclick="cancelCrop()" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:100px;padding:0.6rem 1.6rem;font-family:var(--font-body);font-size:0.9rem;cursor:pointer">Cancel</button>
   </div>
 </div>
 
@@ -572,11 +597,17 @@
       </div>
     </div>
     <div class="add-form">
-      <div class="form-group"><label>Name</label><input type="text" id="e-name"/></div>
+      <!-- 1. Name -->
       <div class="form-group">
-        <label style="display:flex;align-items:center;gap:0.4rem">中文名称 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese name)</span></label>
+        <label>Name</label>
+        <input type="text" id="e-name"/>
+      </div>
+      <!-- 2. 名字 -->
+      <div class="form-group">
+        <label>名字 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese name)</span></label>
         <input type="text" id="e-name-zh" placeholder="例如：芒果玛格丽特"/>
       </div>
+      <!-- 3. Category -->
       <div class="form-group">
         <label>Category</label>
         <select id="e-cat">
@@ -585,9 +616,21 @@
           <option value="Desserts">Desserts</option>
         </select>
       </div>
-      <div class="form-group"><label>Ingredients (comma-separated)</label><textarea id="e-ingredients" rows="2"></textarea></div>
+      <!-- 4. Photos / Videos -->
       <div class="form-group">
-        <label style="display:flex;align-items:center;gap:0.4rem">主要食材 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese ingredients)</span></label>
+        <label>Photo / Video</label>
+        <div id="edit-photo-previews" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem"></div>
+        <input type="file" id="e-photo" accept="image/*,video/*" multiple onchange="addEditPhotos(event)" style="margin-bottom:0.3rem"/>
+        <p style="font-size:0.72rem;color:var(--muted)">First photo is the cover. Tap a photo to crop. Add more or remove existing.</p>
+      </div>
+      <!-- 5. Main Ingredients -->
+      <div class="form-group">
+        <label>Main Ingredients <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(comma-separated)</span></label>
+        <textarea id="e-ingredients" rows="2"></textarea>
+      </div>
+      <!-- 6. 主要材料 -->
+      <div class="form-group">
+        <label>主要材料 <span style="font-size:0.65rem;color:var(--muted);font-weight:400;letter-spacing:0">(Chinese ingredients)</span></label>
         <textarea id="e-ingredients-zh" rows="2" placeholder="例如：芒果，青柠，龙舌兰酒"></textarea>
       </div>
       <button class="form-submit" onclick="saveEdit()">Save Changes</button>
@@ -997,14 +1040,139 @@ async function submitRequest() {
 }
 
 // ── ADD ITEM ──
-let pendingPhotoFile = null;
+// ── PHOTO MULTI-UPLOAD + CROP ──
+let pendingPhotoFiles = []; // array of {file, croppedBlob, url}
+let cropIndex = -1, cropMode = 'add';
+let cropImg = null, cropStartX, cropStartY, cropBoxX=0, cropBoxY=0, cropBoxW=0, cropBoxH=0, isDragging=false;
 
-function previewImg(e) {
-  const file = e.target.files[0]; if (!file) return;
-  pendingPhotoFile = file;
-  const url = URL.createObjectURL(file);
-  const prev = document.getElementById('img-preview');
-  prev.src = url; prev.classList.add('show');
+function previewImgs(e) {
+  const files = Array.from(e.target.files);
+  files.forEach(file => {
+    if (file.type.startsWith('video/')) {
+      const url = URL.createObjectURL(file);
+      pendingPhotoFiles.push({ file, croppedBlob: null, url, isVideo: true });
+    } else {
+      const url = URL.createObjectURL(file);
+      pendingPhotoFiles.push({ file, croppedBlob: null, url, isVideo: false });
+    }
+  });
+  renderPhotoPreviews();
+}
+
+function renderPhotoPreviews() {
+  const wrap = document.getElementById('photo-previews');
+  if (!wrap) return;
+  wrap.innerHTML = pendingPhotoFiles.map((p, i) => `
+    <div style="position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;border:2px solid ${i===0?'#4a6fa5':'var(--border)'};" title="${i===0?'Cover photo':''}">
+      ${p.isVideo
+        ? `<video src="${p.url}" style="width:100%;height:100%;object-fit:cover"></video>`
+        : `<img src="${p.croppedBlob ? URL.createObjectURL(p.croppedBlob) : p.url}" style="width:100%;height:100%;object-fit:cover" onclick="openCrop(${i})"/>`
+      }
+      ${i===0 ? '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(74,111,165,0.8);color:#fff;font-size:0.55rem;text-align:center;padding:2px;font-family:sans-serif">COVER</div>' : ''}
+      <button onclick="removePhoto(${i})" style="position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;border:none;cursor:pointer;font-size:0.65rem;display:flex;align-items:center;justify-content:center;line-height:1">✕</button>
+    </div>`).join('');
+}
+
+function removePhoto(i) {
+  URL.revokeObjectURL(pendingPhotoFiles[i].url);
+  pendingPhotoFiles.splice(i, 1);
+  renderPhotoPreviews();
+}
+
+function openCrop(i) {
+  cropIndex = i;
+  cropMode = 'add';
+  const overlay = document.getElementById('crop-overlay');
+  overlay.style.display = 'flex';
+  const canvas = document.getElementById('crop-canvas');
+  const ctx = canvas.getContext('2d');
+  cropImg = new Image();
+  cropImg.onload = () => {
+    const maxW = Math.min(window.innerWidth * 0.85, 700);
+    const maxH = window.innerHeight * 0.65;
+    const scale = Math.min(maxW / cropImg.width, maxH / cropImg.height, 1);
+    canvas.width  = Math.round(cropImg.width  * scale);
+    canvas.height = Math.round(cropImg.height * scale);
+    ctx.drawImage(cropImg, 0, 0, canvas.width, canvas.height);
+    // Default crop box: center square
+    const size = Math.min(canvas.width, canvas.height) * 0.8;
+    cropBoxX = (canvas.width  - size) / 2;
+    cropBoxY = (canvas.height - size) / 2;
+    cropBoxW = size; cropBoxH = size;
+    updateCropBox();
+  };
+  cropImg.src = pendingPhotoFiles[i].url;
+}
+
+function updateCropBox() {
+  const canvas = document.getElementById('crop-canvas');
+  const box = document.getElementById('crop-box');
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = rect.width  / canvas.width;
+  const scaleY = rect.height / canvas.height;
+  box.style.left   = (rect.left + cropBoxX * scaleX) - canvas.getBoundingClientRect().left + 'px';
+  box.style.top    = (rect.top  + cropBoxY * scaleY) - canvas.getBoundingClientRect().top  + 'px';
+  box.style.width  = (cropBoxW * scaleX) + 'px';
+  box.style.height = (cropBoxH * scaleY) + 'px';
+  // Position relative to overlay
+  const overlay = document.getElementById('crop-overlay');
+  const oRect = overlay.getBoundingClientRect();
+  const cRect = canvas.getBoundingClientRect();
+  box.style.left   = (cRect.left - oRect.left + cropBoxX * scaleX) + 'px';
+  box.style.top    = (cRect.top  - oRect.top  + cropBoxY * scaleY) + 'px';
+}
+
+// Drag crop box
+document.addEventListener('DOMContentLoaded', () => {
+  const box = document.getElementById('crop-box');
+  if (!box) return;
+  let startMX, startMY, startBX, startBY;
+  box.addEventListener('pointerdown', e => {
+    isDragging = true; startMX = e.clientX; startMY = e.clientY;
+    startBX = cropBoxX; startBY = cropBoxY;
+    box.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  box.addEventListener('pointermove', e => {
+    if (!isDragging) return;
+    const canvas = document.getElementById('crop-canvas');
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    cropBoxX = Math.max(0, Math.min(canvas.width  - cropBoxW, startBX + (e.clientX - startMX) * scaleX));
+    cropBoxY = Math.max(0, Math.min(canvas.height - cropBoxH, startBY + (e.clientY - startMY) * scaleY));
+    updateCropBox();
+  });
+  box.addEventListener('pointerup', () => { isDragging = false; });
+});
+
+function applyCrop() {
+  const canvas = document.getElementById('crop-canvas');
+  const out = document.createElement('canvas');
+  const scaleX = cropImg.width  / canvas.width;
+  const scaleY = cropImg.height / canvas.height;
+  out.width  = Math.round(cropBoxW * scaleX);
+  out.height = Math.round(cropBoxH * scaleY);
+  out.getContext('2d').drawImage(cropImg,
+    cropBoxX * scaleX, cropBoxY * scaleY, out.width, out.height,
+    0, 0, out.width, out.height
+  );
+  out.toBlob(blob => {
+    if (cropMode === 'edit') {
+      editMediaItems[cropIndex].croppedBlob = blob;
+      editMediaItems[cropIndex].src = URL.createObjectURL(blob);
+      cancelCrop();
+      renderEditPreviews();
+    } else {
+      pendingPhotoFiles[cropIndex].croppedBlob = blob;
+      cancelCrop();
+      renderPhotoPreviews();
+    }
+  }, 'image/jpeg', 0.92);
+}
+
+function cancelCrop() {
+  document.getElementById('crop-overlay').style.display = 'none';
+  cropIndex = -1; cropImg = null;
 }
 
 function compressImage(file, maxWidth=1200, quality=0.85) {
@@ -1024,11 +1192,14 @@ function compressImage(file, maxWidth=1200, quality=0.85) {
   });
 }
 
-async function uploadPhoto(file) {
-  const compressed = await compressImage(file);
-  const ext  = 'jpg';
+async function uploadPhoto(fileOrBlob, name='photo.jpg') {
+  let toUpload = fileOrBlob instanceof Blob && !(fileOrBlob instanceof File)
+    ? new File([fileOrBlob], name, { type: 'image/jpeg' })
+    : fileOrBlob;
+  if (toUpload.type.startsWith('image/')) toUpload = await compressImage(toUpload);
+  const ext  = toUpload.type.startsWith('video') ? (toUpload.name.split('.').pop()||'mp4') : 'jpg';
   const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const { data, error } = await sb.storage.from('dish-photos').upload(path, compressed, { upsert: true, contentType: 'image/jpeg' });
+  const { error } = await sb.storage.from('dish-photos').upload(path, toUpload, { upsert: true, contentType: toUpload.type });
   if (error) throw error;
   const { data: urlData } = sb.storage.from('dish-photos').getPublicUrl(path);
   return urlData.publicUrl;
@@ -1046,20 +1217,29 @@ async function addItem() {
   const ingsZh = document.getElementById('f-ingredients-zh').value.split(',').map(s=>s.trim()).filter(Boolean);
 
   let photoUrl = null;
-  if (pendingPhotoFile) {
-    try {
-      showToast('Uploading photo…');
-      photoUrl = await uploadPhoto(pendingPhotoFile);
-    } catch(e) {
-      console.error('Photo upload failed:', e);
-      showToast(t('errGeneric')); return;
+  let mediaArr = [];
+
+  if (pendingPhotoFiles.length > 0) {
+    showToast('Uploading photos…');
+    for (let i = 0; i < pendingPhotoFiles.length; i++) {
+      const p = pendingPhotoFiles[i];
+      try {
+        const src = await uploadPhoto(p.croppedBlob || p.file, p.file.name);
+        const type = p.isVideo ? 'video' : 'image';
+        if (i === 0) photoUrl = src;
+        mediaArr.push({ type, src });
+      } catch(e) {
+        console.error('Upload failed:', e);
+        showToast(t('errGeneric')); return;
+      }
     }
   }
 
   const { data, error } = await sb.from('menu_items').insert([{
     name, name_zh: nameZh||null, category: cat,
     ingredients: ings, ingredients_zh: ingsZh.length ? ingsZh : null,
-    photo_url: photoUrl
+    photo_url: photoUrl,
+    media: mediaArr.length ? mediaArr : null
   }]).select().single();
   if (error) { showToast(t('errGeneric')); return; }
   items.unshift(data);
@@ -1068,23 +1248,91 @@ async function addItem() {
   document.getElementById('f-ingredients').value='';
   document.getElementById('f-ingredients-zh').value='';
   document.getElementById('f-photo').value='';
-  document.getElementById('img-preview').classList.remove('show');
-  pendingPhotoFile = null;
+  document.getElementById('photo-previews').innerHTML='';
+  pendingPhotoFiles = [];
   closeAdd(); render(); showToast(t('added', name));
 }
 
 // ── EDIT & DELETE ──
+// edit media state
+let editMediaItems = []; // {type, src, file?, croppedBlob?, isNew}
+
 function openEdit(id) {
-  const item=items.find(i=>i.id===id); if (!item) return;
-  editingId=id;
-  document.getElementById('e-name').value=item.name||'';
-  document.getElementById('e-name-zh').value=item.name_zh||'';
-  document.getElementById('e-cat').value=item.category;
-  document.getElementById('e-ingredients').value=(item.ingredients||[]).join(', ');
-  document.getElementById('e-ingredients-zh').value=(item.ingredients_zh||[]).join(', ');
+  const item = items.find(i => i.id===id); if (!item) return;
+  editingId = id;
+  document.getElementById('e-name').value = item.name||'';
+  document.getElementById('e-name-zh').value = item.name_zh||'';
+  document.getElementById('e-cat').value = item.category;
+  document.getElementById('e-ingredients').value = (item.ingredients||[]).join(', ');
+  document.getElementById('e-ingredients-zh').value = (item.ingredients_zh||[]).join(', ');
+
+  // Load existing media
+  editMediaItems = [];
+  if (item.media && item.media.length) {
+    editMediaItems = item.media.map(m => ({ type: m.type, src: m.src, isNew: false }));
+  } else if (item.photo_url) {
+    editMediaItems = [{ type: 'image', src: item.photo_url, isNew: false }];
+  }
+  renderEditPreviews();
   document.getElementById('edit-overlay').classList.add('open');
 }
-function closeEdit(e) { if (!e||e.target===document.getElementById('edit-overlay')) document.getElementById('edit-overlay').classList.remove('open'); }
+
+function renderEditPreviews() {
+  const wrap = document.getElementById('edit-photo-previews');
+  if (!wrap) return;
+  wrap.innerHTML = editMediaItems.map((p, i) => `
+    <div style="position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;border:2px solid ${i===0?'#4a6fa5':'var(--border)'};">
+      ${p.type==='video'
+        ? `<video src="${p.src}" style="width:100%;height:100%;object-fit:cover"></video>`
+        : `<img src="${p.croppedBlob ? URL.createObjectURL(p.croppedBlob) : p.src}" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openEditCrop(${i})"/>`
+      }
+      ${i===0 ? '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(74,111,165,0.8);color:#fff;font-size:0.55rem;text-align:center;padding:2px;font-family:sans-serif">COVER</div>' : ''}
+      <button onclick="removeEditPhoto(${i})" style="position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;border:none;cursor:pointer;font-size:0.65rem;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>`).join('');
+}
+
+function removeEditPhoto(i) {
+  editMediaItems.splice(i, 1);
+  renderEditPreviews();
+}
+
+function addEditPhotos(e) {
+  Array.from(e.target.files).forEach(file => {
+    const url = URL.createObjectURL(file);
+    editMediaItems.push({ type: file.type.startsWith('video') ? 'video' : 'image', src: url, file, isNew: true });
+  });
+  renderEditPreviews();
+}
+
+function openEditCrop(i) {
+  // reuse crop system but target editMediaItems
+  cropIndex = i;
+  cropMode = 'edit';
+  const overlay = document.getElementById('crop-overlay');
+  overlay.style.display = 'flex';
+  const canvas = document.getElementById('crop-canvas');
+  cropImg = new Image();
+  cropImg.onload = () => {
+    const maxW = Math.min(window.innerWidth * 0.85, 700);
+    const maxH = window.innerHeight * 0.65;
+    const scale = Math.min(maxW / cropImg.width, maxH / cropImg.height, 1);
+    canvas.width  = Math.round(cropImg.width  * scale);
+    canvas.height = Math.round(cropImg.height * scale);
+    canvas.getContext('2d').drawImage(cropImg, 0, 0, canvas.width, canvas.height);
+    const size = Math.min(canvas.width, canvas.height) * 0.8;
+    cropBoxX = (canvas.width  - size) / 2;
+    cropBoxY = (canvas.height - size) / 2;
+    cropBoxW = size; cropBoxH = size;
+    updateCropBox();
+  };
+  cropImg.src = editMediaItems[i].src;
+}
+function closeEdit(e) {
+  if (!e||e.target===document.getElementById('edit-overlay')) {
+    document.getElementById('edit-overlay').classList.remove('open');
+    editMediaItems = [];
+  }
+}
 
 async function saveEdit() {
   const name    = document.getElementById('e-name').value.trim();
@@ -1093,17 +1341,38 @@ async function saveEdit() {
   const ings    = document.getElementById('e-ingredients').value.split(',').map(s=>s.trim()).filter(Boolean);
   const ingsZh  = document.getElementById('e-ingredients-zh').value.split(',').map(s=>s.trim()).filter(Boolean);
   const cat     = document.getElementById('e-cat').value;
+
+  // Upload any new photos
+  let finalMedia = [];
+  if (editMediaItems.length > 0) {
+    showToast('Saving…');
+    for (const p of editMediaItems) {
+      if (p.isNew && p.file) {
+        try {
+          const src = await uploadPhoto(p.croppedBlob || p.file, p.file.name);
+          finalMedia.push({ type: p.type, src });
+        } catch(e) { showToast(t('errGeneric')); return; }
+      } else {
+        finalMedia.push({ type: p.type, src: p.src });
+      }
+    }
+  }
+
+  const photoUrl = finalMedia.length > 0 ? finalMedia[0].src : null;
   const { error } = await sb.from('menu_items').update({
     name, name_zh: nameZh||null, category: cat,
-    ingredients: ings, ingredients_zh: ingsZh.length ? ingsZh : null
+    ingredients: ings, ingredients_zh: ingsZh.length ? ingsZh : null,
+    photo_url: photoUrl,
+    media: finalMedia.length ? finalMedia : null
   }).eq('id', editingId);
   if (error) { showToast(t('errGeneric')); return; }
   const idx = items.findIndex(i => i.id===editingId);
   if (idx!==-1) {
-    items[idx].name=name; items[idx].name_zh=nameZh||null;
-    items[idx].category=cat;
-    items[idx].ingredients=ings; items[idx].ingredients_zh=ingsZh.length?ingsZh:null;
+    items[idx] = { ...items[idx], name, name_zh: nameZh||null, category: cat,
+      ingredients: ings, ingredients_zh: ingsZh.length?ingsZh:null,
+      photo_url: photoUrl, media: finalMedia.length?finalMedia:null };
   }
+  editMediaItems = [];
   closeEdit(); render(); showToast(t('updated'));
 }
 
@@ -1117,18 +1386,216 @@ async function confirmDelete(id) {
 
 // ── DETAIL PAGE ──
 function openDetailPage(id) {
-  const item=items.find(i=>i.id===id); if (!item) return;
-  const media=item.media||[];
-  const mediaHTML=media.length?media.map((m,i)=>m.type==='video'
-    ?`<div class="dp-media-item ${i===0?'active':''}"><video controls src="${m.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></video></div>`
-    :`<div class="dp-media-item ${i===0?'active':''}"><img src="${m.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px"/></div>`
-  ).join(''):`<div class="dp-media-item active" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fce8eb,#dce4f5);width:100%;height:100%">${catIcon[item.category]||catIcon['Food']}</div>`;
-  const thumbsHTML=media.length>1?media.map((m,i)=>{
-    const p=m.type==='video'?`<div style="width:100%;height:100%;background:#1a1a3e;border-radius:8px;display:flex;align-items:center;justify-content:center"><svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>`:`<img src="${m.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>`;
-    return`<div class="dp-thumb ${i===0?'active':''}" onclick="switchMedia(${i})">${p}</div>`;
+  const item = items.find(i => i.id===id); if (!item) return;
+  let media = item.media ? [...item.media] : [];
+  if (item.photo_url && !media.find(m => m.src === item.photo_url)) {
+    media = [{ type:'image', src: item.photo_url }, ...media];
+  }
+  const isFav = userFavorites.includes(item.id);
+  const isWl  = userWishlist.includes(item.id);
+
+  const mediaHTML = media.length ? media.map((m,i) => m.type==='video'
+    ? `<div class="dp-media-item ${i===0?'active':''}"><video controls src="${m.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></video></div>`
+    : `<div class="dp-media-item ${i===0?'active':''}"><img src="${m.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px" loading="lazy"/></div>`
+  ).join('') : `<div class="dp-media-item active" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fce8eb,#dce4f5);width:100%;height:100%">${catIcon[item.category]||catIcon['Food']}</div>`;
+
+  const thumbsHTML = media.length > 1 ? media.map((m,i) => {
+    const p = m.type==='video'
+      ? `<div style="width:100%;height:100%;background:#1a1a3e;border-radius:8px;display:flex;align-items:center;justify-content:center"><svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>`
+      : `<img src="${m.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>`;
+    return `<div class="dp-thumb ${i===0?'active':''}" onclick="switchMedia(${i})">${p}</div>`;
+  }).join('') : '';
+
+  const ingsHTML = (item.ingredients||[]).map(i=>`<span class="dp-ing">${i}</span>`).join('');
+  const ingsZhHTML = (item.ingredients_zh||[]).map(i=>`<span class="dp-ing">${i}</span>`).join('');
+  const uploadSection = isOwner ? `<label class="dp-upload-area"><input type="file" id="media-upload" accept="image/*,video/*" multiple onchange="addMedia(event)"/>+ Add photos or videos</label>` : '';
+
+  const html = `<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>${item.name} — Kuiben</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Lato:wght@300;400;700&family=Syne:wght@600&family=Noto+Sans+SC:wght@300&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#fdf8f2;font-family:'Lato',sans-serif;color:#1a1228;min-height:100vh}
+.dp-header{background:linear-gradient(135deg,#4a6fa5,#5b8dd9);padding:1.2rem 2rem;display:flex;align-items:center;gap:1rem}
+.dp-back{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:100px;padding:0.4rem 1rem;font-size:0.82rem;cursor:pointer;font-family:'Lato',sans-serif;transition:background 0.2s}
+.dp-back:hover{background:rgba(255,255,255,0.25)}
+.dp-wrap{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+.dp-name{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;color:#1a1a3e;margin-bottom:0.2rem}
+.dp-name-zh{font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:1rem;color:#7a6a6a;margin-bottom:0.4rem;letter-spacing:0.05em}
+.dp-cat{font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;color:#dc3c50;font-weight:700;margin-bottom:2rem}
+.dp-layout{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+@media(max-width:680px){.dp-layout{grid-template-columns:1fr}}
+.dp-media-main{position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;background:#dce4f5;margin-bottom:0.8rem}
+.dp-media-item{display:none;width:100%;height:100%}
+.dp-media-item.active{display:block}
+.dp-thumbs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem}
+.dp-thumb{width:64px;height:64px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;flex-shrink:0}
+.dp-thumb.active{border-color:#4a6fa5}
+.dp-thumb:hover{border-color:#dc3c50}
+.dp-upload-area{border:2px dashed rgba(26,26,62,0.18);border-radius:12px;padding:0.9rem;text-align:center;cursor:pointer;margin-top:0.5rem;font-size:0.82rem;color:#6a5a7a;transition:border-color 0.2s}
+.dp-upload-area:hover{border-color:#4a6fa5;color:#4a6fa5}
+.dp-upload-area input{display:none}
+.dp-section-label{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#6a5a7a;font-weight:700;margin-bottom:0.6rem;margin-top:0}
+.dp-ings{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.5rem}
+.dp-ing{background:#fce8eb;border:1px solid #c4b0d8;border-radius:100px;padding:0.22rem 0.7rem;font-size:0.8rem;color:#1a1a3e}
+.dp-actions{display:flex;gap:0.6rem;flex-wrap:wrap}
+.dp-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.2rem;border-radius:100px;font-family:'Lato',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;border:1.5px solid;transition:all 0.2s}
+.dp-btn-fav{background:#fff0f2;border-color:#f4a0aa;color:#dc3c50}
+.dp-btn-fav:hover,.dp-btn-fav.active{background:#ffe0e6}
+.dp-btn-wl{background:#f0f4ff;border-color:#a0b8e0;color:#4a6fa5}
+.dp-btn-wl:hover,.dp-btn-wl.active{background:#dce8ff}
+.dp-btn-req{background:#1a1a3e;border-color:#1a1a3e;color:#fff}
+.dp-btn-req:hover{opacity:0.88}
+.dp-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.dp-req-form{margin-top:1.5rem;background:#fff9f2;border-radius:16px;padding:1.5rem;border:1px solid rgba(26,26,62,0.08);display:none}
+.dp-req-form.show{display:block}
+.dp-req-form h4{font-family:'Playfair Display',serif;font-size:1.1rem;color:#1a1a3e;margin-bottom:1rem}
+.dp-req-form input,.dp-req-form textarea{width:100%;background:#fdf8f2;border:1.5px solid rgba(26,26,62,0.12);border-radius:10px;padding:0.65rem 0.9rem;font-family:'Lato',sans-serif;font-size:0.92rem;color:#1a1228;margin-bottom:0.8rem;resize:vertical}
+.dp-req-form input:focus,.dp-req-form textarea:focus{outline:none;border-color:#4a6fa5}
+.dp-req-submit{background:linear-gradient(135deg,#4a6fa5,#2a4a8a);color:#fff;border:none;border-radius:100px;padding:0.65rem 1.6rem;font-family:'Lato',sans-serif;font-size:0.88rem;cursor:pointer}
+.dp-confirm{display:none;margin-top:1rem;text-align:center;color:#4a6fa5;font-family:'Playfair Display',serif;font-size:1.05rem;font-style:italic}
+.dp-confirm.show{display:block}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a3e;color:#fdf8f2;padding:0.6rem 1.4rem;border-radius:100px;font-size:0.88rem;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none;white-space:nowrap;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="dp-header">
+  <button class="dp-back" onclick="window.close()">← Back</button>
+  <span style="font-family:'Syne',sans-serif;color:#fff;font-size:0.95rem;opacity:0.8">Kuiben Kitchen & Bar</span>
+</div>
+<div class="dp-wrap">
+  <div class="dp-name">${item.name}</div>
+  ${item.name_zh ? `<div class="dp-name-zh">${item.name_zh}</div>` : ''}
+  <div class="dp-cat">${item.category}</div>
+  <div class="dp-layout">
+    <div>
+      <div class="dp-media-main" id="media-main">${mediaHTML}</div>
+      <div class="dp-thumbs" id="thumbs-wrap">${thumbsHTML}</div>
+      ${uploadSection}
+    </div>
+    <div>
+      <div class="dp-section-label">Main Ingredients</div>
+      <div class="dp-ings">${ingsHTML || '<span style="color:#c4b0d8">—</span>'}</div>
+      ${ingsZhHTML ? `<div class="dp-section-label" style="margin-top:0">主要食材</div><div class="dp-ings">${ingsZhHTML}</div>` : ''}
+      <div class="dp-actions">
+        <button class="dp-btn dp-btn-fav${isFav?' active':''}" id="btn-fav" onclick="toggleFav()">
+          <svg viewBox="0 0 24 24" style="fill:${isFav?'#dc3c50':'none'}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          ${isFav ? 'Favorited' : 'Favorite'}
+        </button>
+        <button class="dp-btn dp-btn-wl${isWl?' active':''}" id="btn-wl" onclick="toggleWl()">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          ${isWl ? 'In Wishlist' : 'Wishlist'}
+        </button>
+        <button class="dp-btn dp-btn-req" onclick="toggleReqForm()">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Request Recipe
+        </button>
+      </div>
+      <div class="dp-req-form" id="req-form">
+        <h4>Request this recipe</h4>
+        <input type="text" id="req-name" placeholder="Your name" value="${currentProfile ? currentProfile.name : ''}"/>
+        <textarea id="req-note" rows="3" placeholder="Any notes or dietary preferences…"></textarea>
+        <button class="dp-req-submit" onclick="submitReq()">Send Request</button>
+      </div>
+      <div class="dp-confirm" id="req-confirm">Request sent! ✓</div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="dp-toast"></div>
+<script>
+const sb=supabase.createClient('${SUPABASE_URL}','${SUPABASE_KEY}');
+let media=${JSON.stringify(media)};
+let current=0;
+let isFav=${isFav};
+let isWl=${isWl};
+const profileId=${currentProfile ? JSON.stringify(currentProfile.id) : null};
+const itemId=${item.id};
+
+function showToast(msg){const t=document.getElementById('dp-toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+
+function switchMedia(i){
+  document.querySelectorAll('.dp-media-item').forEach((el,j)=>el.classList.toggle('active',j===i));
+  document.querySelectorAll('.dp-thumb').forEach((el,j)=>el.classList.toggle('active',j===i));
+  current=i;
+}
+
+function addMedia(e){
+  Array.from(e.target.files).forEach(async file=>{
+    const ext='jpg';
+    const path=Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
+    const {data,error}=await sb.storage.from('dish-photos').upload(path,file,{upsert:true});
+    if(error){showToast('Upload failed');return;}
+    const {data:u}=sb.storage.from('dish-photos').getPublicUrl(path);
+    const type=file.type.startsWith('video')?'video':'image';
+    media.push({type,src:u.publicUrl});
+    refreshMedia();
+    await sb.from('menu_items').update({media}).eq('id',itemId);
+    showToast('Photo added!');
+  });
+}
+
+function refreshMedia(){
+  const m=document.getElementById('media-main');
+  const th=document.getElementById('thumbs-wrap');
+  m.innerHTML=media.map((x,i)=>x.type==='video'
+    ?\`<div class="dp-media-item \${i===current?'active':''}"><video controls src="\${x.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></video></div>\`
+    :\`<div class="dp-media-item \${i===current?'active':''}"><img src="\${x.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px" loading="lazy"/></div>\`
+  ).join('');
+  if(th)th.innerHTML=media.length>1?media.map((x,i)=>{
+    const p=x.type==='video'?'<div style="width:100%;height:100%;background:#1a1a3e;border-radius:8px;display:flex;align-items:center;justify-content:center"><svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points=\\"5 3 19 12 5 21 5 3\\"/></svg></div>':\`<img src="\${x.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>\`;
+    return\`<div class="dp-thumb \${i===current?'active':''}" onclick="switchMedia(\${i})">\${p}</div>\`;
   }).join(''):'';
-  const ingsHTML=(item.ingredients||[]).map(i=>`<span class="dp-ing">${i}</span>`).join('');
-  const html=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>${item.name} — Kuiben</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Lato:wght@300;400;700&family=Syne:wght@600&display=swap" rel="stylesheet"/><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{background:#fdf8f2;font-family:'Lato',sans-serif;color:#1a1228}.dp-header{background:linear-gradient(135deg,#4a6fa5,#5b8dd9);padding:1.2rem 2rem;display:flex;align-items:center;gap:1rem}.dp-back{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:100px;padding:0.4rem 1rem;font-size:0.82rem;cursor:pointer;font-family:'Lato',sans-serif}.dp-wrap{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 5rem}.dp-name{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;color:#1a1a3e;margin-bottom:0.4rem}.dp-cat{font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;color:#dc3c50;font-weight:700;margin-bottom:2rem}.dp-layout{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem}@media(max-width:680px){.dp-layout{grid-template-columns:1fr}}.dp-media-main{position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;background:#dce4f5;margin-bottom:0.8rem}.dp-media-item{display:none;width:100%;height:100%}.dp-media-item.active{display:block}.dp-thumbs{display:flex;gap:0.5rem;flex-wrap:wrap}.dp-thumb{width:64px;height:64px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s}.dp-thumb.active{border-color:#4a6fa5}.dp-upload-area{border:2px dashed rgba(26,26,62,0.18);border-radius:12px;padding:1rem;text-align:center;cursor:pointer;margin-top:0.8rem;font-size:0.82rem;color:#6a5a7a}.dp-upload-area input{display:none}.dp-section-label{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#6a5a7a;font-weight:700;margin-bottom:0.6rem;margin-top:1.5rem}.dp-section-label:first-child{margin-top:0}.dp-ings{display:flex;flex-wrap:wrap;gap:0.4rem}.dp-ing{background:#fce8eb;border:1px solid #c4b0d8;border-radius:100px;padding:0.22rem 0.7rem;font-size:0.8rem;color:#1a1a3e}.dp-notes{background:#fff9f2;border-radius:12px;padding:1rem 1.2rem;font-size:0.92rem;color:#6a5a7a;line-height:1.7;min-height:80px;border:1px solid rgba(26,26,62,0.08)}.dp-notes[contenteditable]:empty::before{content:'Add notes...';color:#c4b0d8}.dp-notes:focus{outline:none;border-color:#4a6fa5}.dp-save-btn{margin-top:1.2rem;background:linear-gradient(135deg,#4a6fa5,#2a4a8a);color:#fff;border:none;border-radius:100px;padding:0.6rem 1.6rem;font-family:'Lato',sans-serif;font-size:0.88rem;cursor:pointer}.dp-count{font-size:0.75rem;color:#6a5a7a;margin-top:0.4rem}</style></head><body><div class="dp-header"><button class="dp-back" onclick="window.close()">← Back</button><span style="font-family:'Syne',sans-serif;color:#fff;font-size:0.95rem;opacity:0.8">Kuiben Kitchen & Bar</span></div><div class="dp-wrap"><div class="dp-name">${item.name}</div><div class="dp-cat">${item.category}</div><div class="dp-layout"><div><div class="dp-media-main" id="media-main">${mediaHTML}</div><div class="dp-thumbs" id="thumbs-wrap">${thumbsHTML}</div><div class="dp-count" id="media-count">${media.length} media file${media.length!==1?'s':''}</div><label class="dp-upload-area"><input type="file" id="media-upload" accept="image/*,video/*" multiple onchange="addMedia(event)"/>+ Add photos or videos</label></div><div><div class="dp-section-label">Ingredients</div><div class="dp-ings">${ingsHTML||'<span style="color:#c4b0d8">No ingredients listed</span>'}</div><div class="dp-section-label">Notes</div><div class="dp-notes" id="notes-field" contenteditable="true">${item.notes||''}</div><button class="dp-save-btn" onclick="saveNotes()">Save Notes</button></div></div></div><script>const sb=supabase.createClient('${SUPABASE_URL}','${SUPABASE_KEY}');let media=${JSON.stringify(media)};let current=0;function switchMedia(i){document.querySelectorAll('.dp-media-item').forEach((el,j)=>el.classList.toggle('active',j===i));document.querySelectorAll('.dp-thumb').forEach((el,j)=>el.classList.toggle('active',j===i));current=i;}function addMedia(e){Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=async ev=>{const t=file.type.startsWith('video')?'video':'image';media.push({type:t,src:ev.target.result});refreshMedia();await sb.from('menu_items').update({media}).eq('id',${item.id});};r.readAsDataURL(file);});}function refreshMedia(){const m=document.getElementById('media-main');const th=document.getElementById('thumbs-wrap');const c=document.getElementById('media-count');m.innerHTML=media.map((x,i)=>x.type==='video'?\`<div class="dp-media-item \${i===current?'active':''}"><video controls src="\${x.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></video></div>\`:\`<div class="dp-media-item \${i===current?'active':''}"><img src="\${x.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px"/></div>\`).join('');th.innerHTML=media.length>1?media.map((x,i)=>{const p=x.type==='video'?'<div style="width:100%;height:100%;background:#1a1a3e;border-radius:8px;display:flex;align-items:center;justify-content:center"><svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points=\\"5 3 19 12 5 21 5 3\\"/></svg></div>':\`<img src="\${x.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>\`;return\`<div class="dp-thumb \${i===current?'active':''}" onclick="switchMedia(\${i})">\${p}</div>\`;}).join(''):'';c.textContent=media.length+' media file'+(media.length!==1?'s':'');}async function saveNotes(){const notes=document.getElementById('notes-field').innerText.trim();await sb.from('menu_items').update({notes}).eq('id',${item.id});const btn=document.querySelector('.dp-save-btn');btn.textContent='Saved!';setTimeout(()=>btn.textContent='Save Notes',1800);}<\/script></body></html>`;
+}
+
+async function toggleFav(){
+  if(!profileId){showToast('Sign in to save favourites');return;}
+  const btn=document.getElementById('btn-fav');
+  if(!isFav){
+    await sb.from('favorites').insert([{profile_id:profileId,item_id:itemId}]);
+    isFav=true;btn.querySelector('svg').style.fill='#dc3c50';
+    btn.childNodes[btn.childNodes.length-1].textContent=' Favorited';
+    btn.classList.add('active');showToast('Added to Favorites!');
+  }else{
+    await sb.from('favorites').delete().eq('profile_id',profileId).eq('item_id',itemId);
+    isFav=false;btn.querySelector('svg').style.fill='none';
+    btn.childNodes[btn.childNodes.length-1].textContent=' Favorite';
+    btn.classList.remove('active');showToast('Removed from Favorites');
+  }
+}
+
+async function toggleWl(){
+  if(!profileId){showToast('Sign in to save wishlist');return;}
+  const btn=document.getElementById('btn-wl');
+  if(!isWl){
+    await sb.from('wishlists').insert([{profile_id:profileId,item_id:itemId}]);
+    isWl=true;
+    btn.childNodes[btn.childNodes.length-1].textContent=' In Wishlist';
+    btn.classList.add('active');showToast('Added to Wishlist!');
+  }else{
+    await sb.from('wishlists').delete().eq('profile_id',profileId).eq('item_id',itemId);
+    isWl=false;
+    btn.childNodes[btn.childNodes.length-1].textContent=' Wishlist';
+    btn.classList.remove('active');showToast('Removed from Wishlist');
+  }
+}
+
+function toggleReqForm(){document.getElementById('req-form').classList.toggle('show');}
+
+async function submitReq(){
+  const name=document.getElementById('req-name').value.trim();
+  if(!name){showToast('Please enter your name');return;}
+  const note=document.getElementById('req-note').value.trim();
+  await sb.from('requests').insert([{profile_id:profileId,guest_name:name,item_id:itemId,dish_name:'${item.name.replace(/'/g, "\\'")}',note}]);
+  fetch('https://script.google.com/macros/s/AKfycbyEgUNGXgxb3QxuEZxLE_oPajC8RoK7iLcgeRpe64QcPDc13xLymDlAqSSYoUxoxYEwIw/exec',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dish:'${item.name.replace(/'/g, "\\'")}',note,time:new Date().toLocaleString()})});
+  document.getElementById('req-form').classList.remove('show');
+  document.getElementById('req-confirm').classList.add('show');
+}
+<\/script>
+</body></html>`;
   window.open(URL.createObjectURL(new Blob([html],{type:'text/html'})),'_blank');
 }
 
@@ -1205,7 +1672,7 @@ const i18n = {
     tabAll: 'All', tabFood: 'Food', tabDrinks: 'Drinks', tabDesserts: 'Desserts',
     searchPlaceholder: 'Search by name or ingredient…',
     sortNewest: 'Newest first', sortAZ: 'A → Z', sortZA: 'Z → A',
-    ingredients: 'Ingredients',
+    ingredients: 'Main Ingredients',
     viewDetails: 'View details',
     btnFav: 'Favorite', btnWishlist: 'Wishlist', btnRequest: 'Request Recipe',
     savedTip: 'Saved!',
@@ -1222,7 +1689,7 @@ const i18n = {
     yourTopPicks: 'Your personal top picks',
     addCreation: 'Add a Creation', editDish: 'Edit Dish',
     name: 'Name', category: 'Category', photo: 'Photo',
-    ingredientsLabel: 'Ingredients (comma-separated)',
+    ingredientsLabel: 'Main Ingredients (comma-separated)',
     addToMenu: 'Add to Menu', saveChanges: 'Save Changes', delete: 'Delete',
     everything: 'Everything', foodTitle: 'Food', drinksTitle: 'Cocktails & Drinks', dessertsTitle: 'Desserts',
     noResults: 'No results found', tryDiff: 'Try a different name or ingredient.',

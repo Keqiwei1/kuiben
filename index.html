@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- kuiben-version: v2026.03.21.005 -->
+<!-- kuiben-version: v2026.03.21.006 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -479,6 +479,7 @@
       </div>
       <div class="auth-panel active" id="panel-signin">
         <div><label>Phone Number</label><input type="tel" id="si-phone" placeholder="e.g. 555-123-4567" autocomplete="tel"/></div>
+        <div><label>Email <span style="font-size:0.65rem;font-weight:400;color:var(--muted)">(optional)</span></label><input type="email" id="si-email" placeholder="e.g. you@email.com" autocomplete="email"/></div>
         <div class="auth-error" id="si-error"></div>
         <div class="auth-loading" id="si-loading"><div class="spinner"></div></div>
         <button class="auth-btn" onclick="doSignIn()">Sign In</button>
@@ -486,6 +487,7 @@
       <div class="auth-panel" id="panel-signup">
         <div><label>Your Name</label><input type="text" id="su-name" placeholder="e.g. Jamie"/></div>
         <div><label>Phone Number</label><input type="tel" id="su-phone" placeholder="e.g. 555-123-4567" autocomplete="tel"/></div>
+        <div><label>Email <span style="font-size:0.65rem;font-weight:400;color:var(--muted)">(optional)</span></label><input type="email" id="su-email" placeholder="e.g. you@email.com" autocomplete="email"/></div>
         <div class="auth-error" id="su-error"></div>
         <div class="auth-loading" id="su-loading"><div class="spinner"></div></div>
         <button class="auth-btn" onclick="doSignUp()">Create Account</button>
@@ -990,6 +992,7 @@ function normalizePhone(p) { return p.replace(/\D/g,''); }
 async function doSignUp() {
   const name  = document.getElementById('su-name').value.trim();
   const phone = normalizePhone(document.getElementById('su-phone').value);
+  const email = document.getElementById('su-email').value.trim();
   const err   = document.getElementById('su-error');
   const load  = document.getElementById('su-loading');
   if (!name)           { err.textContent=t('errName'); return; }
@@ -997,7 +1000,7 @@ async function doSignUp() {
   load.style.display='block'; err.textContent='';
   const { data: existing } = await sb.from('profiles').select('id').eq('phone',phone).single();
   if (existing) { load.style.display='none'; err.textContent=t('errExists'); return; }
-  const { data, error } = await sb.from('profiles').insert([{ name, phone }]).select().single();
+  const { data, error } = await sb.from('profiles').insert([{ name, phone, email: email||null }]).select().single();
   load.style.display='none';
   if (error) { err.textContent=t('errGeneric'); return; }
   currentProfile = data;
@@ -1008,6 +1011,7 @@ async function doSignUp() {
 
 async function doSignIn() {
   const phone = normalizePhone(document.getElementById('si-phone').value);
+  const email = document.getElementById('si-email').value.trim();
   const err   = document.getElementById('si-error');
   const load  = document.getElementById('si-loading');
   if (phone.length<7) { err.textContent=t('errPhone'); return; }
@@ -1016,6 +1020,11 @@ async function doSignIn() {
   load.style.display='none';
   if (!data) { err.textContent=t('errNotFound'); return; }
   currentProfile = data;
+  // Update email if provided and not already set
+  if (email && !data.email) {
+    await sb.from('profiles').update({ email }).eq('id', data.id);
+    currentProfile.email = email;
+  }
   localStorage.setItem('kuiben-phone', phone);
   await loadUserData();
   closeAuth(); updateUserUI(); render(); showToast(t('welcomeBack', data.name));

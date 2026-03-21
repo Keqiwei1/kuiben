@@ -1132,7 +1132,7 @@ async function submitRequest() {
     dish_name: item?.name || 'Unknown',
     note,
   }]);
-  const SHEET_URL='https://script.google.com/macros/s/AKfycbyEgUNGXgxb3QxuEZxLE_oPajC8RoK7iLcgeRpe64QcPDc13xLymDlAqSSYoUxoxYEwIw/exec';
+  const SHEET_URL='https://script.google.com/macros/s/AKfycbx7hAn9ZsZf_rqEof9zZeLT5aLU0KGG9TdZBtNGkHMOrnThFbXCDRyQWKNxsSpN2PJ-6A/exec';
   const payload = { name, dish: item?.name||'Unknown', note, phone: currentProfile?.phone||'', time: new Date().toLocaleString() };
   console.log('Sending to sheet:', payload);
   fetch(SHEET_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
@@ -1687,7 +1687,7 @@ async function dpSubmitReq(itemId, dishName) {
   if (!name) { showToast(t('errReqName')); return; }
   const note = document.getElementById('dp-req-note').value.trim();
   await sb.from('requests').insert([{profile_id:currentProfile?.id||null,guest_name:name,item_id:itemId,dish_name:dishName,note}]);
-  const SHEET_URL='https://script.google.com/macros/s/AKfycbyEgUNGXgxb3QxuEZxLE_oPajC8RoK7iLcgeRpe64QcPDc13xLymDlAqSSYoUxoxYEwIw/exec';
+  const SHEET_URL='https://script.google.com/macros/s/AKfycbx7hAn9ZsZf_rqEof9zZeLT5aLU0KGG9TdZBtNGkHMOrnThFbXCDRyQWKNxsSpN2PJ-6A/exec';
   fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dish:dishName,note,phone:currentProfile?.phone||'',time:new Date().toLocaleString()})});
   document.getElementById('dp-req-form').classList.remove('show');
   document.getElementById('dp-confirm').classList.add('show');

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<!-- kuiben-version: v2026.03.21.001 -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>About — Kuiben Kitchen & Bar</title>
+  <meta name="description" content="The story behind Kuiben Kitchen & Bar — a home kitchen run on good ingredients, big portions, and zero profit margins."/>
+  <meta property="og:title" content="About Kuiben Kitchen & Bar"/>
+  <meta property="og:description" content="The story behind Kuiben — a home kitchen run on good ingredients, big portions, and zero profit margins."/>
+  <meta property="og:url" content="https://atkuiben.com/about"/>
+  <meta property="og:image" content="https://atkuiben.com/og-image.jpg"/>
+  <meta name="theme-color" content="#4a6fa5"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@700&family=Lato:wght@300;400;700&family=Noto+Sans+SC:wght@300&family=Syne:wght@600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:      #fdf8f2;
+      --surface: #fffdf9;
+      --brown:   #1a1a3e;
+      --amber:   #dc3c50;
+      --muted:   #7a6a6a;
+      --blush:   #e8d8c8;
+      --border:  rgba(26,26,62,0.10);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--brown); font-family: 'Lato', sans-serif; min-height: 100vh; }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #4a6fa5 0%, #5b8dd9 50%, #7ba3e0 100%);
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top:0;right:0;bottom:0;left:0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+    .header-logo { font-family: 'Caveat', cursive; font-size: 2rem; color: #fff; text-decoration: none; position: relative; z-index: 1; }
+    .header-nav { display: flex; gap: 1rem; position: relative; z-index: 1; }
+    .header-nav a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.85rem; font-family: 'Lato', sans-serif; letter-spacing: 0.05em; transition: color 0.2s; }
+    .header-nav a:hover { color: #fff; }
+    .header-nav a.active { color: #fff; font-weight: 700; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #4a6fa5 0%, #5b8dd9 50%, #7ba3e0 100%);
+      padding: 5rem 2rem 6rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top:0;right:0;bottom:0;left:0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .hero-inner { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.85);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.35rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+      font-family: 'Lato', sans-serif;
+    }
+    .hero h1 { font-family: 'Caveat', cursive; font-size: clamp(4rem, 12vw, 8rem); color: #fff; line-height: 0.95; margin-bottom: 0.5rem; }
+    .hero-sub { font-family: 'Lato', sans-serif; font-size: 0.8rem; letter-spacing: 0.4em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 1.5rem; }
+    .hero-tagline { font-family: 'Noto Sans SC', sans-serif; font-weight: 300; font-size: 1rem; color: rgba(255,255,255,0.7); letter-spacing: 0.2em; }
+
+    /* ── MAIN ── */
+    main { max-width: 780px; margin: 0 auto; padding: 5rem 2rem 6rem; }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 5rem; }
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--amber);
+      font-weight: 700;
+      font-family: 'Lato', sans-serif;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--blush); }
+
+    /* ── NAME CARD ── */
+    .name-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 2rem;
+      box-shadow: 0 4px 24px rgba(26,26,62,0.06);
+    }
+    .name-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, #4a6fa5, #7ba3e0);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Caveat', cursive; font-size: 2.2rem; color: #fff; flex-shrink: 0;
+    }
+    .name-info h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brown); margin-bottom: 0.3rem; }
+    .name-info p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+    .name-socials { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; }
+    .social-link {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: var(--bg); border: 1.5px solid var(--border); color: var(--muted);
+      border-radius: 100px; padding: 0.4rem 1rem; font-size: 0.8rem;
+      font-family: 'Lato', sans-serif; text-decoration: none; transition: all 0.2s;
+    }
+    .social-link:hover { border-color: var(--brown); color: var(--brown); transform: translateY(-1px); }
+    .social-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ── BODY TEXT ── */
+    .body-text { font-size: 1.05rem; line-height: 1.9; color: #3a2a3a; font-weight: 300; }
+    .body-text p { margin-bottom: 1.4rem; }
+    .body-text p:last-child { margin-bottom: 0; }
+
+    /* ── KUIBEN CARD ── */
+    .kuiben-card {
+      background: linear-gradient(135deg, #4a6fa5 0%, #5b8dd9 100%);
+      border-radius: 24px; padding: 3rem; position: relative; overflow: hidden;
+    }
+    .kuiben-card::before {
+      content: ''; position: absolute; top:0;right:0;bottom:0;left:0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .kuiben-card-inner { position: relative; z-index: 1; }
+    .kuiben-card-name { font-family: 'Caveat', cursive; font-size: 4rem; color: #fff; line-height: 1; margin-bottom: 0.2rem; }
+    .kuiben-card-zh { font-family: 'Noto Sans SC', sans-serif; font-weight: 300; font-size: 0.85rem; letter-spacing: 0.15em; color: rgba(255,255,255,0.6); margin-bottom: 1.8rem; }
+    .kuiben-card-text { font-size: 1rem; line-height: 1.85; color: rgba(255,255,255,0.88); font-weight: 300; max-width: 560px; }
+    .kuiben-card-text p { margin-bottom: 1rem; }
+    .kuiben-card-text p:last-child { margin-bottom: 0; }
+
+    /* ── QUOTE ── */
+    .quote-wrap { border-left: 3px solid var(--amber); padding: 0.5rem 0 0.5rem 1.5rem; margin: 2rem 0; }
+    .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem; color: var(--brown); line-height: 1.6; }
+    .quote-attr { font-size: 0.78rem; color: var(--muted); margin-top: 0.5rem; letter-spacing: 0.05em; }
+
+    /* ── CTA ── */
+    .cta-wrap { text-align: center; margin-top: 2rem; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: linear-gradient(135deg, #4a6fa5, #2a4a8a);
+      color: #fff; text-decoration: none; border-radius: 100px;
+      padding: 0.85rem 2rem; font-family: 'Lato', sans-serif;
+      font-size: 0.95rem; font-weight: 700; transition: opacity 0.2s, transform 0.2s;
+    }
+    .cta-btn:hover { opacity: 0.88; transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer { background: linear-gradient(135deg, #3a5f95, #4a6fa5); color: rgba(255,255,255,0.6); text-align: center; padding: 2rem 1.5rem; }
+    .footer-inner { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+    .footer-name { font-family: 'Caveat', cursive; font-size: 1.6rem; color: #fff; }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+    .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy { font-size: 0.68rem; color: rgba(255,255,255,0.3); }
+
+    @media (max-width: 560px) {
+      .name-card { flex-direction: column; gap: 1.2rem; padding: 1.8rem; }
+      .hero { padding: 3.5rem 1.5rem 4.5rem; }
+      main { padding: 3rem 1.2rem 5rem; }
+      .kuiben-card { padding: 2rem; }
+      .kuiben-card-name { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="header-logo">Kuiben</a>
+  <nav class="header-nav">
+    <a href="/">Menu</a>
+    <a href="/about" class="active">About</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="hero-tag">The story behind the kitchen</span>
+    <h1>Kuiben</h1>
+    <p class="hero-sub">Kitchen & Bar</p>
+    <p class="hero-tagline">好好吃饭，好好生活</p>
+  </div>
+</div>
+
+<main>
+
+  <!-- About Keqi -->
+  <div class="section">
+    <div class="section-label">The host</div>
+    <div class="name-card">
+      <img src="keqi.jpg" alt="Keqi" style="width:100px;height:100px;border-radius:50%;object-fit:cover;object-position:center top;flex-shrink:0;border:3px solid var(--blush);"/>
+      <div class="name-info">
+        <h2>Keqi</h2>
+        <p>Home cook, cocktail maker, and the person behind every dish on this menu.</p>
+        <div class="name-socials">
+          <a class="social-link" href="https://www.instagram.com/keqi_wei_yo" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            @keqi_wei_yo
+          </a>
+          <a class="social-link" href="https://xhslink.com/m/4AGFtRBvpQE" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24">
+              <text x="12" y="17" text-anchor="middle" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="700" fill="currentColor">红</text>
+            </svg>
+            魏小厨今天吃什么
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="body-text" style="margin-top:2rem">
+      <p>Growing up, my family introduced me to a wide variety of foods and cuisines — and that curiosity never left. I've always been a foodie with a simple rule: try anything once. I believe every meal should be colorful, because color means variety, variety means ingredients, and a plate with only one or two tones is a plate playing it too safe.</p>
+      <p>I started cooking when I studied abroad in 2010, far from home and forced to figure it out. Over the years, with friends and family willing to taste and test alongside me, the cooking kept growing. In 2025, I got my bartender certificate — because a great meal deserves a great drink to go with it.</p>
+    </div>
+  </div>
+
+  <!-- About Kuiben -->
+  <div class="section">
+    <div class="section-label">The kitchen</div>
+    <div class="kuiben-card">
+      <div class="kuiben-card-inner">
+        <div class="kuiben-card-name">亏本</div>
+        <div class="kuiben-card-zh">Kuiben — doing business at a loss</div>
+        <div class="kuiben-card-text">
+          <p>In Chinese, 亏本 means spending more than you earn — giving more than makes financial sense. That's exactly what happens every time friends come over. The good ingredients come out, the portions are never small, and no one leaves hungry.</p>
+          <p>The name started as a joke. Friends teased that Keqi was running a 亏本 kitchen and bar — no real restaurant could survive these margins. But it stuck, because it perfectly captures what this is about. Not a restaurant. Just a home, good food, and the people you love.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Philosophy -->
+  <div class="section">
+    <div class="section-label">The philosophy</div>
+    <div class="body-text">
+      <p>This menu is a living collection of everything that comes out of the Kuiben kitchen — food, cocktails, desserts, and whatever else is being experimented with at the moment. It started as an idea to create an online menu for friends. But now it's something bigger — a way to share inspiration through food, and a reminder that passion for life often starts at the table.</p>
+      <p>If something catches your eye, save it to your wishlist or request the recipe. Every dish has been made with real care, served to real people, and is absolutely worth every penny of the loss.</p>
+    </div>
+    <div class="cta-wrap">
+      <a href="/" class="cta-btn">
+        <svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Browse the Menu
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-name">Kuiben</div>
+    <div class="footer-links">
+      <a href="/">← Back to Menu</a>
+      <a href="https://www.instagram.com/keqi_wei_yo" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://xhslink.com/m/4AGFtRBvpQE" target="_blank" rel="noopener">小红书</a>
+    </div>
+    <div class="footer-copy">© 2026 Kuiben Kitchen & Bar · atkuiben.com</div>
+  </div>
+</footer>
+
+</body>
+</html>

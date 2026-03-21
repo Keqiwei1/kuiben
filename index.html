@@ -586,6 +586,7 @@
       <span class="req-dish-name" id="req-dish-name"></span>
       <div class="req-form">
         <div><label>Your name</label><input type="text" id="req-name" placeholder="e.g. Sarah"/></div>
+        <div><label>Email <span style="font-size:0.75rem;color:var(--muted);font-weight:400">(optional)</span></label><input type="email" id="req-email" placeholder="e.g. sarah@email.com"/></div>
         <div><label>Message (optional)</label><textarea id="req-note" rows="3" placeholder="Any notes or dietary preferences…"></textarea></div>
         <button class="req-submit" onclick="submitRequest()">Send Request</button>
       </div>
@@ -1123,6 +1124,7 @@ function closeReq(e) { if (!e||e.target===document.getElementById('req-overlay')
 async function submitRequest() {
   const name=document.getElementById('req-name').value.trim();
   if (!name) { showToast(t('errReqName')); return; }
+  const email=document.getElementById('req-email').value.trim();
   const note=document.getElementById('req-note').value.trim();
   const item=items.find(i=>i.id===pendingRequestId);
   await sb.from('requests').insert([{
@@ -1132,8 +1134,8 @@ async function submitRequest() {
     dish_name: item?.name || 'Unknown',
     note,
   }]);
-  const SHEET_URL='https://script.google.com/macros/s/AKfycbx7hAn9ZsZf_rqEof9zZeLT5aLU0KGG9TdZBtNGkHMOrnThFbXCDRyQWKNxsSpN2PJ-6A/exec';
-  const payload = { name, dish: item?.name||'Unknown', note, phone: currentProfile?.phone||'', time: new Date().toLocaleString() };
+  const SHEET_URL='https://script.google.com/macros/s/AKfycby6FPef6FEz84HoXx90199NRFUYh-Rqs6ysU-l6VHUFzXrlPypg0XLICtyCzed1D2NITA/exec';
+  const payload = { name, dish: item?.name||'Unknown', note, email, phone: currentProfile?.phone||'', time: new Date().toLocaleString() };
   console.log('Sending to sheet:', payload);
   fetch(SHEET_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
     .then(()=>console.log('Sheet fetch done'))
@@ -1601,6 +1603,7 @@ function openDetailPage(id) {
         <div class="dp-req-form" id="dp-req-form">
           <h4>${isZh?'请求食谱':'Request this recipe'}</h4>
           <input type="text" id="dp-req-name" placeholder="${isZh?'你的名字':'Your name'}" value="${currentProfile?currentProfile.name:''}"/>
+          <input type="email" id="dp-req-email" placeholder="${isZh?'邮箱（选填）':'Email (optional)'}"/>
           <textarea id="dp-req-note" rows="3" placeholder="${isZh?'有什么特别要求吗？':'Any notes or dietary preferences…'}"></textarea>
           <button class="dp-req-submit" onclick="dpSubmitReq(${item.id},'${safeItemName}')">
             ${isZh?'发送请求':'Send Request'}
@@ -1685,10 +1688,11 @@ async function dpSubmitReq(itemId, dishName) {
   const isZh = lang==='zh';
   const name = document.getElementById('dp-req-name').value.trim();
   if (!name) { showToast(t('errReqName')); return; }
+  const email = document.getElementById('dp-req-email').value.trim();
   const note = document.getElementById('dp-req-note').value.trim();
   await sb.from('requests').insert([{profile_id:currentProfile?.id||null,guest_name:name,item_id:itemId,dish_name:dishName,note}]);
-  const SHEET_URL='https://script.google.com/macros/s/AKfycbx7hAn9ZsZf_rqEof9zZeLT5aLU0KGG9TdZBtNGkHMOrnThFbXCDRyQWKNxsSpN2PJ-6A/exec';
-  fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dish:dishName,note,phone:currentProfile?.phone||'',time:new Date().toLocaleString()})});
+  const SHEET_URL='https://script.google.com/macros/s/AKfycby6FPef6FEz84HoXx90199NRFUYh-Rqs6ysU-l6VHUFzXrlPypg0XLICtyCzed1D2NITA/exec';
+  fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dish:dishName,note,email,phone:currentProfile?.phone||'',time:new Date().toLocaleString()})});
   document.getElementById('dp-req-form').classList.remove('show');
   document.getElementById('dp-confirm').classList.add('show');
 }

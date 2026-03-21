@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="theme-color" content="#4a6fa5"/>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
@@ -75,7 +78,7 @@
     html { scroll-behavior: smooth; }
     body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
     body::before {
-      content: ''; position: fixed; inset: 0;
+      content: ''; position: fixed; top:0; right:0; bottom:0; left:0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
       pointer-events: none; z-index: 0; opacity: 0.4;
     }
@@ -105,7 +108,7 @@
     .lang-btn.active { color: #fff; font-weight: 700; }
     .lang-sep { font-size: 0.7rem; color: rgba(255,255,255,0.25); }
     #loading-screen {
-      position: fixed; inset: 0; background: linear-gradient(135deg,#4a6fa5,#5b8dd9);
+      position: fixed; top:0; right:0; bottom:0; left:0; background: linear-gradient(135deg,#4a6fa5,#5b8dd9);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       z-index: 1000; transition: opacity 0.5s;
     }
@@ -120,7 +123,7 @@
 
     /* ── HEADER ── */
     header { background:linear-gradient(135deg,#4a6fa5 0%,#5b8dd9 50%,#7ba3e0 100%); color:#fdf8fd; text-align:center; padding:3rem 1.5rem 2.5rem; position:relative; overflow:hidden; }
-    header::before { content:''; position:absolute; inset:0; background-image:radial-gradient(circle,rgba(255,255,255,0.18) 1px,transparent 1px); background-size:28px 28px; }
+    header::before { content:''; position:absolute; top:0;right:0;bottom:0;left:0; background-image:radial-gradient(circle,rgba(255,255,255,0.18) 1px,transparent 1px); background-size:28px 28px; }
     .header-inner { position:relative; z-index:1; }
     .header-eyebrow { font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:0.95rem; letter-spacing:0.25em; color:rgba(255,255,255,0.8); margin-bottom:0.3rem; }
     header h1 { line-height:1; margin-bottom:0.8rem; }
@@ -161,7 +164,7 @@
     .sign-out-btn:hover { background:rgba(255,255,255,0.22); }
 
     /* ── AUTH ── */
-    #auth-overlay { display:none; position:fixed; inset:0; background:rgba(26,18,40,0.7); backdrop-filter:blur(6px); z-index:500; align-items:center; justify-content:center; padding:1.5rem; }
+    #auth-overlay { display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(26,18,40,0.7); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); z-index:500; align-items:center; justify-content:center; padding:1.5rem; }
     #auth-overlay.open { display:flex; }
     #auth-modal { background:var(--surface); border-radius:28px; max-width:400px; width:100%; box-shadow:0 24px 70px rgba(26,18,40,0.35); animation:modalIn 0.3s ease; overflow:hidden; }
     .auth-header { background:linear-gradient(135deg,#4a6fa5,#5b8dd9); padding:2rem 2rem 1.5rem; text-align:center; }
@@ -224,7 +227,7 @@
     .card { background:var(--surface); border-radius:var(--radius); overflow:hidden; border:1px solid var(--border); box-shadow:0 2px 12px var(--shadow); transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.3s ease; display:flex; flex-direction:column; }
     .card:hover { transform:translateY(-8px) scale(1.01); box-shadow:0 20px 40px rgba(26,26,62,0.14); }
     .card-img-wrap { position:relative; cursor:pointer; overflow:hidden; }
-    .card-img-wrap::after { content:attr(data-view); position:absolute; inset:0; background:rgba(26,18,40,0.45); color:#fff; font-family:var(--font-body); font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.25s; }
+    .card-img-wrap::after { content:attr(data-view); position:absolute; top:0;right:0;bottom:0;left:0; background:rgba(26,18,40,0.45); color:#fff; font-family:var(--font-body); font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.25s; }
     .card-img-wrap:hover::after { opacity:1; }
     .card-img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; background:var(--cream); }
     .card-img-placeholder { width:100%; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#fce8eb 0%,#dce4f5 100%); }
@@ -271,7 +274,7 @@
 
     /* ── MODALS ── */
     @keyframes modalIn { from{opacity:0;transform:translateY(20px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
-    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(26,18,40,0.55); backdrop-filter:blur(4px); z-index:200; align-items:center; justify-content:center; padding:1.5rem; }
+    .modal-overlay { display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(26,18,40,0.55); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); z-index:200; align-items:center; justify-content:center; padding:1.5rem; }
     .modal-overlay.open { display:flex; }
     .modal-box { background:var(--surface); border-radius:24px; max-width:480px; width:100%; max-height:82vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(26,18,40,0.3); animation:modalIn 0.3s ease; }
     .modal-head { padding:1.5rem 1.8rem 1rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
@@ -291,7 +294,7 @@
     .wl-empty { text-align:center; padding:2.5rem 1rem; color:var(--muted); font-family:var(--font-disp); font-size:1.1rem; }
 
     /* ── REQUEST MODAL ── */
-    #req-overlay { display:none; position:fixed; inset:0; background:rgba(26,18,40,0.55); backdrop-filter:blur(4px); z-index:200; align-items:center; justify-content:center; padding:1.5rem; }
+    #req-overlay { display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(26,18,40,0.55); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); z-index:200; align-items:center; justify-content:center; padding:1.5rem; }
     #req-overlay.open { display:flex; }
     #req-modal { background:var(--surface); border-radius:24px; max-width:440px; width:100%; box-shadow:0 20px 60px rgba(26,18,40,0.3); animation:modalIn 0.3s ease; overflow:hidden; }
     .req-head { padding:1.5rem 1.8rem 1rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
@@ -312,7 +315,7 @@
     .req-confirm-close { background:linear-gradient(135deg,#4a6fa5,#2a4a8a); color:#fff; border:none; border-radius:100px; padding:0.65rem 1.8rem; font-family:var(--font-body); font-size:0.9rem; cursor:pointer; margin-top:0.4rem; }
 
     /* ── ADD / EDIT MODAL ── */
-    #add-overlay,#edit-overlay { display:none; position:fixed; inset:0; background:rgba(26,18,40,0.55); backdrop-filter:blur(4px); z-index:200; align-items:center; justify-content:center; padding:1.5rem; }
+    #add-overlay,#edit-overlay { display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(26,18,40,0.55); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); z-index:200; align-items:center; justify-content:center; padding:1.5rem; }
     #add-overlay.open,#edit-overlay.open { display:flex; }
     #add-modal,#edit-modal { background:var(--surface); border-radius:24px; max-width:500px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(26,18,40,0.3); animation:modalIn 0.3s ease; }
     .add-modal-head,.edit-modal-head { padding:1.5rem 1.8rem 1rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--surface); z-index:1; }
@@ -329,7 +332,58 @@
     .delete-btn { background:#fff0f0; border:1px solid #f4a0a0; color:#c0192b; border-radius:100px; padding:0.4rem 1rem; font-family:var(--font-body); font-size:0.82rem; cursor:pointer; transition:background 0.2s; }
     .delete-btn:hover { background:#ffe0e0; }
 
-    /* ── SUBCATEGORY FILTER BAR ── */
+    /* ── DETAIL PANEL ── */
+    #detail-panel {
+      position: fixed; top:0; right:0; bottom:0; left:0; z-index: 400;
+      background: var(--bg);
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    #detail-panel.open { transform: translateY(0); }
+    body.panel-open { position: fixed; width: 100%; overflow: hidden; }
+    .dp-header { background: linear-gradient(135deg,#4a6fa5,#5b8dd9); padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1rem; position: sticky; top: 0; z-index: 1; }
+    .dp-back { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: #fff; border-radius: 100px; padding: 0.4rem 1rem; font-size: 0.82rem; cursor: pointer; font-family: var(--font-body); transition: background 0.2s; }
+    .dp-back:hover { background: rgba(255,255,255,0.25); }
+    .dp-wrap { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+    .dp-name { font-family: var(--font-disp); font-size: clamp(1.8rem,5vw,3rem); font-weight: 700; color: var(--brown); margin-bottom: 0.2rem; line-height: 1.15; }
+    .dp-name-sub { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .dp-cat-label { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); font-weight: 700; margin-bottom: 1.5rem; }
+    .dp-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+    @media(max-width:640px){ .dp-layout { grid-template-columns: 1fr; } }
+    .dp-media-main { position: relative; aspect-ratio: 4/3; border-radius: 16px; overflow: hidden; background: var(--cream); margin-bottom: 0.8rem; }
+    .dp-media-item { display: none; width: 100%; height: 100%; }
+    .dp-media-item.active { display: block; }
+    .dp-media-item img, .dp-media-item video { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+    .dp-thumbs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .dp-thumb { width: 64px; height: 64px; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; flex-shrink: 0; }
+    .dp-thumb.active { border-color: #4a6fa5; }
+    .dp-thumb img, .dp-thumb video { width: 100%; height: 100%; object-fit: cover; }
+    .dp-upload-area { border: 2px dashed rgba(26,26,62,0.18); border-radius: 12px; padding: 0.9rem; text-align: center; cursor: pointer; margin-top: 0.5rem; font-size: 0.82rem; color: var(--muted); transition: border-color 0.2s; }
+    .dp-upload-area:hover { border-color: #4a6fa5; color: #4a6fa5; }
+    .dp-upload-area input { display: none; }
+    .dp-section-label { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 0.6rem; }
+    .dp-ings { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+    .dp-ing { background: var(--cream); border: 1px solid #c4b0d8; border-radius: 100px; padding: 0.22rem 0.7rem; font-size: 0.8rem; color: var(--brown); }
+    .dp-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .dp-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.2rem; border-radius: 100px; font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1.5px solid; transition: all 0.2s; }
+    .dp-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .dp-btn-fav { background: #fff0f2; border-color: #f4a0aa; color: #dc3c50; }
+    .dp-btn-fav.active, .dp-btn-fav:hover { background: #ffe0e6; }
+    .dp-btn-wl  { background: #f0f4ff; border-color: #a0b8e0; color: #4a6fa5; }
+    .dp-btn-wl.active, .dp-btn-wl:hover  { background: #dce8ff; }
+    .dp-btn-req { background: var(--brown); border-color: var(--brown); color: #fff; }
+    .dp-btn-req:hover { opacity: 0.88; }
+    .dp-req-form { margin-top: 1.5rem; background: #fff9f2; border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); display: none; }
+    .dp-req-form.show { display: block; }
+    .dp-req-form h4 { font-family: var(--font-disp); font-size: 1.1rem; color: var(--brown); margin-bottom: 1rem; }
+    .dp-req-form input, .dp-req-form textarea { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 0.65rem 0.9rem; font-family: var(--font-body); font-size: 0.92rem; color: var(--text); margin-bottom: 0.8rem; resize: vertical; }
+    .dp-req-form input:focus, .dp-req-form textarea:focus { outline: none; border-color: #4a6fa5; }
+    .dp-req-submit { background: linear-gradient(135deg,#4a6fa5,#2a4a8a); color: #fff; border: none; border-radius: 100px; padding: 0.65rem 1.6rem; font-family: var(--font-body); font-size: 0.88rem; cursor: pointer; }
+    .dp-confirm { display: none; margin-top: 1rem; text-align: center; color: #4a6fa5; font-family: var(--font-disp); font-size: 1.05rem; font-style: italic; }
+    .dp-confirm.show { display: block; }
     .subcat-bar { display:none; flex-wrap:wrap; gap:0.5rem; justify-content:center; padding:0.8rem 1.5rem 0.2rem; background:var(--bg); }
     .subcat-bar.show { display:flex; }
     .subcat-pill { background:var(--surface); border:1.5px solid var(--border); color:var(--muted); border-radius:100px; padding:0.3rem 0.9rem; font-size:0.78rem; font-family:var(--font-body); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
@@ -600,7 +654,7 @@
 </div>
 
 <!-- CROP MODAL -->
-<div id="crop-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
+<div id="crop-overlay" style="display:none;position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,0.9);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
   <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;font-family:sans-serif">Drag to move · Drag corners to resize</p>
   <canvas id="crop-canvas" style="display:block;max-width:90vw;max-height:65vh;cursor:crosshair;border-radius:8px"></canvas>
   <div style="display:flex;gap:1rem">
@@ -664,6 +718,15 @@
       <button class="form-submit" onclick="saveEdit()">Save Changes</button>
     </div>
   </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div id="detail-panel">
+  <div class="dp-header">
+    <button class="dp-back" onclick="closeDetailPanel()" id="dp-back-btn">← Back</button>
+    <span style="font-family:'Syne',sans-serif;color:#fff;font-size:0.95rem;opacity:0.8">Kuiben Kitchen & Bar</span>
+  </div>
+  <div class="dp-wrap" id="dp-content"></div>
 </div>
 
 <footer>
@@ -1478,229 +1541,174 @@ function openDetailPage(id) {
   }
   const isFav = userFavorites.includes(item.id);
   const isWl  = userWishlist.includes(item.id);
+  const isZh  = lang === 'zh';
+  const displayName    = (isZh && item.name_zh) ? item.name_zh : item.name;
+  const displayNameSub = (isZh && item.name_zh) ? item.name : item.name_zh;
+  const displayIngs    = (isZh && item.ingredients_zh?.length) ? item.ingredients_zh : (item.ingredients||[]);
+  const ingsLabel      = isZh ? '主要食材' : 'Main Ingredients';
+  const favLabel       = isZh ? '收藏' : 'Favorite';
+  const favActiveLabel = isZh ? '已收藏' : 'Favorited';
+  const wlLabel        = isZh ? '想吃单' : 'Wishlist';
+  const wlActiveLabel  = isZh ? '已加入' : 'In Wishlist';
+  const reqLabel       = isZh ? '想要食谱' : 'Request Recipe';
+  const backLabel      = isZh ? '← 返回' : '← Back';
+
+  document.getElementById('dp-back-btn').textContent = backLabel;
 
   const mediaHTML = media.length ? media.map((m,i) => m.type==='video'
-    ? `<div class="dp-media-item ${i===0?'active':''}"><video controls src="${m.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></video></div>`
-    : `<div class="dp-media-item ${i===0?'active':''}"><img src="${m.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px" loading="lazy"/></div>`
-  ).join('') : `<div class="dp-media-item active" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fce8eb,#dce4f5);width:100%;height:100%">${catIcon[item.category]||catIcon['Food']}</div>`;
+    ? `<div class="dp-media-item ${i===0?'active':''}"><video controls src="${m.src}"></video></div>`
+    : `<div class="dp-media-item ${i===0?'active':''}"><img src="${m.src}" loading="lazy"/></div>`
+  ).join('') : `<div class="dp-media-item active" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fce8eb,#dce4f5);height:300px">${catIcon[item.category]||catIcon['Food']}</div>`;
 
   const thumbsHTML = media.length > 1 ? media.map((m,i) => {
     const p = m.type==='video'
-      ? `<div style="width:100%;height:100%;background:#1a1a3e;border-radius:8px;display:flex;align-items:center;justify-content:center"><svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>`
-      : `<img src="${m.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>`;
-    return `<div class="dp-thumb ${i===0?'active':''}" onclick="switchMedia(${i})">${p}</div>`;
+      ? `<div style="width:100%;height:100%;background:#1a1a3e;display:flex;align-items:center;justify-content:center"><svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>`
+      : `<img src="${m.src}" style="width:100%;height:100%;object-fit:cover"/>`;
+    return `<div class="dp-thumb ${i===0?'active':''}" onclick="dpSwitchMedia(${i})">${p}</div>`;
   }).join('') : '';
 
-  const isZh = lang === 'zh';
-  const displayName = (isZh && item.name_zh) ? item.name_zh : item.name;
-  const displayNameSub = (isZh && item.name_zh) ? item.name : item.name_zh;
-  const displayIngs = (isZh && item.ingredients_zh?.length) ? item.ingredients_zh : (item.ingredients||[]);
-  const ingsLabel = isZh ? '主要食材' : 'Main Ingredients';
-  const favLabel = isZh ? '收藏' : 'Favorite';
-  const favActiveLabel = isZh ? '已收藏' : 'Favorited';
-  const wlLabel = isZh ? '想吃单' : 'Wishlist';
-  const wlActiveLabel = isZh ? '已加入' : 'In Wishlist';
-  const reqLabel = isZh ? '想要食谱' : 'Request Recipe';
-  const reqFormTitle = isZh ? '请求食谱' : 'Request this recipe';
-  const namePlaceholder = isZh ? '你的名字' : 'Your name';
-  const notePlaceholder = isZh ? '有什么特别要求吗？' : 'Any notes or dietary preferences…';
-  const sendLabel = isZh ? '发送请求' : 'Send Request';
-  const reqSentLabel = isZh ? '请求已发送！✓' : 'Request sent! ✓';
-  const backLabel = isZh ? '← 返回' : '← Back';
-  const addMediaLabel = isZh ? '+ 添加照片或视频' : '+ Add photos or videos';
-
   const ingsHTML = displayIngs.map(i=>`<span class="dp-ing">${i}</span>`).join('');
+  const uploadSection = isOwner ? `<label class="dp-upload-area"><input type="file" accept="image/*,video/*" multiple onchange="dpAddMedia(event,${item.id})"/>${isZh?'+ 添加照片或视频':'+ Add photos or videos'}</label>` : '';
+  const safeItemName = item.name.replace(/'/g, "\'");
 
-  const uploadSection = isOwner ? `<label class="dp-upload-area"><input type="file" id="media-upload" accept="image/*,video/*" multiple onchange="addMedia(event)"/>${addMediaLabel}</label>` : '';
-
-  const html = `<!DOCTYPE html>
-<html lang="${isZh?'zh-CN':'en'}"><head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${displayName} — Kuiben</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Lato:wght@300;400;700&family=Syne:wght@600&family=Noto+Sans+SC:wght@300&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:#fdf8f2;font-family:'Lato',sans-serif;color:#1a1228;min-height:100vh}
-.dp-header{background:linear-gradient(135deg,#4a6fa5,#5b8dd9);padding:1.2rem 2rem;display:flex;align-items:center;gap:1rem}
-.dp-back{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:100px;padding:0.4rem 1rem;font-size:0.82rem;cursor:pointer;font-family:'Lato',sans-serif;transition:background 0.2s}
-.dp-back:hover{background:rgba(255,255,255,0.25)}
-.dp-wrap{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
-.dp-name{font-family:${isZh?"'Noto Sans SC'"+",'Playfair Display'":'\'Playfair Display\',serif'};font-size:clamp(2rem,5vw,3rem);font-weight:700;color:#1a1a3e;margin-bottom:0.2rem;line-height:1.15}
-.dp-name-sub{font-family:'Lato',sans-serif;font-size:0.9rem;color:#9a8a8a;margin-bottom:0.4rem;letter-spacing:0.03em}
-.dp-cat{font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;color:#dc3c50;font-weight:700;margin-bottom:2rem}
-.dp-layout{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
-@media(max-width:680px){.dp-layout{grid-template-columns:1fr}}
-.dp-media-main{position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;background:#dce4f5;margin-bottom:0.8rem}
-.dp-media-item{display:none;width:100%;height:100%}
-.dp-media-item.active{display:block}
-.dp-thumbs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem}
-.dp-thumb{width:64px;height:64px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;flex-shrink:0}
-.dp-thumb.active{border-color:#4a6fa5}
-.dp-thumb:hover{border-color:#dc3c50}
-.dp-upload-area{border:2px dashed rgba(26,26,62,0.18);border-radius:12px;padding:0.9rem;text-align:center;cursor:pointer;margin-top:0.5rem;font-size:0.82rem;color:#6a5a7a;transition:border-color 0.2s}
-.dp-upload-area:hover{border-color:#4a6fa5;color:#4a6fa5}
-.dp-upload-area input{display:none}
-.dp-section-label{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#6a5a7a;font-weight:700;margin-bottom:0.6rem;margin-top:0}
-.dp-ings{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.5rem}
-.dp-ing{background:#fce8eb;border:1px solid #c4b0d8;border-radius:100px;padding:0.22rem 0.7rem;font-size:0.8rem;color:#1a1a3e}
-.dp-actions{display:flex;gap:0.6rem;flex-wrap:wrap}
-.dp-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.2rem;border-radius:100px;font-family:'Lato',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;border:1.5px solid;transition:all 0.2s}
-.dp-btn-fav{background:#fff0f2;border-color:#f4a0aa;color:#dc3c50}
-.dp-btn-fav:hover,.dp-btn-fav.active{background:#ffe0e6}
-.dp-btn-wl{background:#f0f4ff;border-color:#a0b8e0;color:#4a6fa5}
-.dp-btn-wl:hover,.dp-btn-wl.active{background:#dce8ff}
-.dp-btn-req{background:#1a1a3e;border-color:#1a1a3e;color:#fff}
-.dp-btn-req:hover{opacity:0.88}
-.dp-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.dp-req-form{margin-top:1.5rem;background:#fff9f2;border-radius:16px;padding:1.5rem;border:1px solid rgba(26,26,62,0.08);display:none}
-.dp-req-form.show{display:block}
-.dp-req-form h4{font-family:'Playfair Display',serif;font-size:1.1rem;color:#1a1a3e;margin-bottom:1rem}
-.dp-req-form input,.dp-req-form textarea{width:100%;background:#fdf8f2;border:1.5px solid rgba(26,26,62,0.12);border-radius:10px;padding:0.65rem 0.9rem;font-family:'Lato',sans-serif;font-size:0.92rem;color:#1a1228;margin-bottom:0.8rem;resize:vertical}
-.dp-req-form input:focus,.dp-req-form textarea:focus{outline:none;border-color:#4a6fa5}
-.dp-req-submit{background:linear-gradient(135deg,#4a6fa5,#2a4a8a);color:#fff;border:none;border-radius:100px;padding:0.65rem 1.6rem;font-family:'Lato',sans-serif;font-size:0.88rem;cursor:pointer}
-.dp-confirm{display:none;margin-top:1rem;text-align:center;color:#4a6fa5;font-family:'Playfair Display',serif;font-size:1.05rem;font-style:italic}
-.dp-confirm.show{display:block}
-.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a3e;color:#fdf8f2;padding:0.6rem 1.4rem;border-radius:100px;font-size:0.88rem;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none;white-space:nowrap;z-index:999}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-</style>
-</head>
-<body>
-<div class="dp-header">
-  <button class="dp-back" onclick="window.close()">${backLabel}</button>
-  <span style="font-family:'Syne',sans-serif;color:#fff;font-size:0.95rem;opacity:0.8">Kuiben Kitchen & Bar</span>
-</div>
-<div class="dp-wrap">
-  <div class="dp-name">${displayName}</div>
-  ${displayNameSub ? `<div class="dp-name-sub">${displayNameSub}</div>` : ''}
-  <div class="dp-cat">${item.category}</div>
-  <div class="dp-layout">
-    <div>
-      <div class="dp-media-main" id="media-main">${mediaHTML}</div>
-      <div class="dp-thumbs" id="thumbs-wrap">${thumbsHTML}</div>
-      ${uploadSection}
-    </div>
-    <div>
-      <div class="dp-section-label">${ingsLabel}</div>
-      <div class="dp-ings">${ingsHTML || '<span style="color:#c4b0d8">—</span>'}</div>
-      <div class="dp-actions">
-        <button class="dp-btn dp-btn-fav${isFav?' active':''}" id="btn-fav" onclick="toggleFav()">
-          <svg viewBox="0 0 24 24" style="fill:${isFav?'#dc3c50':'none'}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <span id="fav-label">${isFav ? favActiveLabel : favLabel}</span>
-        </button>
-        <button class="dp-btn dp-btn-wl${isWl?' active':''}" id="btn-wl" onclick="toggleWl()">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          <span id="wl-label">${isWl ? wlActiveLabel : wlLabel}</span>
-        </button>
-        <button class="dp-btn dp-btn-req" onclick="toggleReqForm()">
-          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          ${reqLabel}
-        </button>
+  document.getElementById('dp-content').innerHTML = `
+    <div class="dp-name">${displayName}</div>
+    ${displayNameSub ? `<div class="dp-name-sub">${displayNameSub}</div>` : ''}
+    <div class="dp-cat-label">${item.category}</div>
+    <div class="dp-layout">
+      <div>
+        <div class="dp-media-main" id="dp-media-main">${mediaHTML}</div>
+        <div class="dp-thumbs" id="dp-thumbs">${thumbsHTML}</div>
+        ${uploadSection}
       </div>
-      <div class="dp-req-form" id="req-form">
-        <h4>${reqFormTitle}</h4>
-        <input type="text" id="req-name" placeholder="${namePlaceholder}" value="${currentProfile ? currentProfile.name : ''}"/>
-        <textarea id="req-note" rows="3" placeholder="${notePlaceholder}"></textarea>
-        <button class="dp-req-submit" onclick="submitReq()">${sendLabel}</button>
+      <div>
+        <div class="dp-section-label">${ingsLabel}</div>
+        <div class="dp-ings">${ingsHTML || '<span style="color:#c4b0d8">—</span>'}</div>
+        <div class="dp-actions">
+          <button class="dp-btn dp-btn-fav${isFav?' active':''}" id="dp-fav-btn" onclick="dpToggleFav(${item.id})">
+            <svg viewBox="0 0 24 24" style="fill:${isFav?'#dc3c50':'none'}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span id="dp-fav-label">${isFav?favActiveLabel:favLabel}</span>
+          </button>
+          <button class="dp-btn dp-btn-wl${isWl?' active':''}" id="dp-wl-btn" onclick="dpToggleWl(${item.id})">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span id="dp-wl-label">${isWl?wlActiveLabel:wlLabel}</span>
+          </button>
+          <button class="dp-btn dp-btn-req" onclick="document.getElementById('dp-req-form').classList.toggle('show')">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            ${reqLabel}
+          </button>
+        </div>
+        <div class="dp-req-form" id="dp-req-form">
+          <h4>${isZh?'请求食谱':'Request this recipe'}</h4>
+          <input type="text" id="dp-req-name" placeholder="${isZh?'你的名字':'Your name'}" value="${currentProfile?currentProfile.name:''}"/>
+          <textarea id="dp-req-note" rows="3" placeholder="${isZh?'有什么特别要求吗？':'Any notes or dietary preferences…'}"></textarea>
+          <button class="dp-req-submit" onclick="dpSubmitReq(${item.id},'${safeItemName}')">
+            ${isZh?'发送请求':'Send Request'}
+          </button>
+        </div>
+        <div class="dp-confirm" id="dp-confirm">${isZh?'请求已发送！✓':'Request sent! ✓'}</div>
       </div>
-      <div class="dp-confirm" id="req-confirm">${reqSentLabel}</div>
     </div>
-  </div>
-</div>
-<div class="toast" id="dp-toast"></div>
-<script>
-const sb=supabase.createClient('${SUPABASE_URL}','${SUPABASE_KEY}');
-let media=${JSON.stringify(media)};
-let current=0;
-let isFav=${isFav};
-let isWl=${isWl};
-const profileId=${currentProfile ? JSON.stringify(currentProfile.id) : null};
-const itemId=${item.id};
+  `;
 
-function showToast(msg){const t=document.getElementById('dp-toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+  window._dpMedia = media;
+  const panel = document.getElementById('detail-panel');
+  panel.scrollTop = 0;
+  panel.classList.add('open');
+  document.body.classList.add('panel-open');
+}
 
-function switchMedia(i){
+function closeDetailPanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.body.classList.remove('panel-open');
+}
+
+// Swipe down to close detail panel on mobile
+(function() {
+  let startY = 0, startScroll = 0;
+  document.getElementById('detail-panel').addEventListener('touchstart', e => {
+    startY = e.touches[0].clientY;
+    startScroll = document.getElementById('detail-panel').scrollTop;
+  }, {passive: true});
+  document.getElementById('detail-panel').addEventListener('touchend', e => {
+    const dy = e.changedTouches[0].clientY - startY;
+    if (dy > 80 && startScroll === 0) closeDetailPanel();
+  }, {passive: true});
+})();
+
+function dpSwitchMedia(i) {
   document.querySelectorAll('.dp-media-item').forEach((el,j)=>el.classList.toggle('active',j===i));
   document.querySelectorAll('.dp-thumb').forEach((el,j)=>el.classList.toggle('active',j===i));
-  current=i;
 }
 
-function addMedia(e){
-  Array.from(e.target.files).forEach(async file=>{
-    const ext='jpg';
-    const path=Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
-    const {data,error}=await sb.storage.from('dish-photos').upload(path,file,{upsert:true});
-    if(error){showToast('Upload failed');return;}
-    const {data:u}=sb.storage.from('dish-photos').getPublicUrl(path);
-    const type=file.type.startsWith('video')?'video':'image';
-    media.push({type,src:u.publicUrl});
-    refreshMedia();
-    await sb.from('menu_items').update({media}).eq('id',itemId);
-    showToast('Photo added!');
-  });
-}
-
-function refreshMedia(){
-  const m=document.getElementById('media-main');
-  const th=document.getElementById('thumbs-wrap');
-  m.innerHTML=media.map((x,i)=>x.type==='video'
-    ?\`<div class="dp-media-item \${i===current?'active':''}"><video controls src="\${x.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></video></div>\`
-    :\`<div class="dp-media-item \${i===current?'active':''}"><img src="\${x.src}" style="width:100%;height:100%;object-fit:cover;border-radius:12px" loading="lazy"/></div>\`
-  ).join('');
-  if(th)th.innerHTML=media.length>1?media.map((x,i)=>{
-    const p=x.type==='video'?'<div style="width:100%;height:100%;background:#1a1a3e;border-radius:8px;display:flex;align-items:center;justify-content:center"><svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points=\\"5 3 19 12 5 21 5 3\\"/></svg></div>':\`<img src="\${x.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>\`;
-    return\`<div class="dp-thumb \${i===current?'active':''}" onclick="switchMedia(\${i})">\${p}</div>\`;
-  }).join(''):'';
-}
-
-async function toggleFav(){
-  if(!profileId){showToast('${isZh?'请先登录':'Sign in to save'}');return;}
-  const btn=document.getElementById('btn-fav');
-  const lbl=document.getElementById('fav-label');
-  if(!isFav){
-    await sb.from('favorites').insert([{profile_id:profileId,item_id:itemId}]);
-    isFav=true;btn.querySelector('svg').style.fill='#dc3c50';
-    if(lbl) lbl.textContent='${favActiveLabel}';
-    btn.classList.add('active');showToast('${isZh?'已收藏！':'Added to Favorites!'}');
-  }else{
-    await sb.from('favorites').delete().eq('profile_id',profileId).eq('item_id',itemId);
-    isFav=false;btn.querySelector('svg').style.fill='none';
-    if(lbl) lbl.textContent='${favLabel}';
-    btn.classList.remove('active');showToast('${isZh?'已取消收藏':'Removed from Favorites'}');
+async function dpToggleFav(id) {
+  if (!currentProfile) { openAuth(); return; }
+  const btn = document.getElementById('dp-fav-btn');
+  const lbl = document.getElementById('dp-fav-label');
+  const isZh = lang==='zh';
+  const idx = userFavorites.indexOf(id);
+  if (idx===-1) {
+    userFavorites.push(id);
+    await sb.from('favorites').insert([{profile_id:currentProfile.id,item_id:id}]);
+    btn.classList.add('active'); btn.querySelector('svg').style.fill='#dc3c50';
+    if(lbl) lbl.textContent = isZh?'已收藏':'Favorited';
+  } else {
+    userFavorites.splice(idx,1);
+    await sb.from('favorites').delete().eq('profile_id',currentProfile.id).eq('item_id',id);
+    btn.classList.remove('active'); btn.querySelector('svg').style.fill='none';
+    if(lbl) lbl.textContent = isZh?'收藏':'Favorite';
   }
+  updateCounts();
 }
 
-async function toggleWl(){
-  if(!profileId){showToast('${isZh?'请先登录':'Sign in to save'}');return;}
-  const btn=document.getElementById('btn-wl');
-  const lbl=document.getElementById('wl-label');
-  if(!isWl){
-    await sb.from('wishlists').insert([{profile_id:profileId,item_id:itemId}]);
-    isWl=true;
-    if(lbl) lbl.textContent='${wlActiveLabel}';
-    btn.classList.add('active');showToast('${isZh?'已加入想吃单！':'Added to Wishlist!'}');
-  }else{
-    await sb.from('wishlists').delete().eq('profile_id',profileId).eq('item_id',itemId);
-    isWl=false;
-    if(lbl) lbl.textContent='${wlLabel}';
-    btn.classList.remove('active');showToast('${isZh?'已移出想吃单':'Removed from Wishlist'}');
+async function dpToggleWl(id) {
+  if (!currentProfile) { openAuth(); return; }
+  const btn = document.getElementById('dp-wl-btn');
+  const lbl = document.getElementById('dp-wl-label');
+  const isZh = lang==='zh';
+  const idx = userWishlist.indexOf(id);
+  if (idx===-1) {
+    userWishlist.push(id);
+    await sb.from('wishlists').insert([{profile_id:currentProfile.id,item_id:id}]);
+    btn.classList.add('active');
+    if(lbl) lbl.textContent = isZh?'已加入':'In Wishlist';
+  } else {
+    userWishlist.splice(idx,1);
+    await sb.from('wishlists').delete().eq('profile_id',currentProfile.id).eq('item_id',id);
+    btn.classList.remove('active');
+    if(lbl) lbl.textContent = isZh?'想吃单':'Wishlist';
   }
+  updateCounts();
 }
 
-function toggleReqForm(){document.getElementById('req-form').classList.toggle('show');}
-
-async function submitReq(){
-  const name=document.getElementById('req-name').value.trim();
-  if(!name){showToast('${isZh?'请输入你的名字':'Please enter your name'}');return;}
-  const note=document.getElementById('req-note').value.trim();
-  await sb.from('requests').insert([{profile_id:profileId,guest_name:name,item_id:itemId,dish_name:'${item.name.replace(/'/g, "\\'")}',note}]);
-  fetch('https://script.google.com/macros/s/AKfycbyEgUNGXgxb3QxuEZxLE_oPajC8RoK7iLcgeRpe64QcPDc13xLymDlAqSSYoUxoxYEwIw/exec',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dish:'${item.name.replace(/'/g, "\\'")}',note,time:new Date().toLocaleString()})});
-  document.getElementById('req-form').classList.remove('show');
-  document.getElementById('req-confirm').classList.add('show');
+async function dpSubmitReq(itemId, dishName) {
+  const isZh = lang==='zh';
+  const name = document.getElementById('dp-req-name').value.trim();
+  if (!name) { showToast(t('errReqName')); return; }
+  const note = document.getElementById('dp-req-note').value.trim();
+  await sb.from('requests').insert([{profile_id:currentProfile?.id||null,guest_name:name,item_id:itemId,dish_name:dishName,note}]);
+  const SHEET_URL='https://script.google.com/macros/s/AKfycbyEgUNGXgxb3QxuEZxLE_oPajC8RoK7iLcgeRpe64QcPDc13xLymDlAqSSYoUxoxYEwIw/exec';
+  fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dish:dishName,note,phone:currentProfile?.phone||'',time:new Date().toLocaleString()})});
+  document.getElementById('dp-req-form').classList.remove('show');
+  document.getElementById('dp-confirm').classList.add('show');
 }
-<\/script>
-</body></html>`;
-  window.open(URL.createObjectURL(new Blob([html],{type:'text/html'})),'_blank');
+
+async function dpAddMedia(e, itemId) {
+  const files = Array.from(e.target.files);
+  for (const file of files) {
+    try {
+      const src = await uploadPhoto(file, file.name);
+      const type = file.type.startsWith('video') ? 'video' : 'image';
+      const item = items.find(i=>i.id===itemId);
+      if (!item) continue;
+      const newMedia = [...(item.media||[]), {type,src}];
+      await sb.from('menu_items').update({media:newMedia}).eq('id',itemId);
+      item.media = newMedia;
+      if (!item.photo_url) { item.photo_url=src; await sb.from('menu_items').update({photo_url:src}).eq('id',itemId); }
+      showToast('Added!');
+    } catch(err) { showToast(t('errGeneric')); }
+  }
+  openDetailPage(itemId);
 }
 
 // ── SEARCH ──

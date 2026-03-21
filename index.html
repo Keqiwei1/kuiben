@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- kuiben-version: v2026.03.21.005 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -83,16 +84,7 @@
       pointer-events: none; z-index: 0; opacity: 0.4;
     }
 
-    /* ── LANG TOGGLE ── */
-    .lang-toggle {
-      position: fixed;
-      top: 1rem;
-      right: 1.2rem;
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
+    /* ── LANG BTN ── */
     .lang-btn {
       background: none;
       border: none;
@@ -421,13 +413,6 @@
 </head>
 <body>
 
-<!-- LANG TOGGLE (fixed top right) -->
-<div class="lang-toggle">
-  <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
-  <span class="lang-sep">/</span>
-  <button class="lang-btn" id="lang-zh" onclick="setLang('zh')">中文</button>
-</div>
-
 <!-- LOADING -->
 <div id="loading-screen">
   <span class="ls-name">Kuiben</span>
@@ -439,7 +424,20 @@
 
 <!-- HEADER -->
 <header>
-  <div class="header-inner">
+  <div style="position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.5rem;z-index:2;border-bottom:1px solid rgba(255,255,255,0.1)">
+    <span style="font-family:'Caveat',cursive;font-size:1.5rem;color:#fff;line-height:1">Kuiben</span>
+    <nav style="display:flex;align-items:center;gap:1.2rem">
+      <a href="/" style="color:#fff;font-size:0.85rem;font-family:var(--font-body);text-decoration:none;font-weight:700;letter-spacing:0.05em">Menu</a>
+      <a href="/about" style="color:rgba(255,255,255,0.65);font-size:0.85rem;font-family:var(--font-body);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">About</a>
+      <span style="color:rgba(255,255,255,0.2);font-size:0.7rem">|</span>
+      <div style="display:flex;align-items:center;gap:0.3rem">
+        <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+        <span style="color:rgba(255,255,255,0.25);font-size:0.7rem">/</span>
+        <button class="lang-btn" id="lang-zh" onclick="setLang('zh')">中文</button>
+      </div>
+    </nav>
+  </div>
+  <div class="header-inner" style="padding-top:3rem">
     <p class="header-eyebrow">好好吃饭，好好生活</p>
     <h1>
       <span class="kuiben-name" id="kuiben-tap-target">Kuiben</span>
@@ -455,9 +453,6 @@
         <button class="sign-out-btn" onclick="signOut()">Sign out</button>
       </div>
       <button class="header-pill" id="sign-in-pill" onclick="openAuth()">
-        <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Sign in / Sign up
-      </button>
       <button class="header-pill" onclick="openFavorites()">
         <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         Favorites <span class="pill-count" id="fav-count">0</span>
@@ -735,6 +730,10 @@
     <div class="footer-name">Kuiben</div>
     <div class="footer-tagline">好好吃饭，好好生活</div>
     <div class="footer-socials">
+      <a class="footer-social" href="/about">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M12 14c-4 0-7 2-7 4v1h14v-1c0-2-3-4-7-4z"/></svg>
+        About
+      </a>
       <a class="footer-social" href="https://www.instagram.com/keqi_wei_yo" target="_blank" rel="noopener">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
         @keqi_wei_yo
@@ -744,6 +743,10 @@
           <text x="12" y="17" text-anchor="middle" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="700" fill="currentColor">红</text>
         </svg>
         魏小厨今天吃什么
+      </a>
+      <a class="footer-social" href="/about" style="text-decoration:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        About
       </a>
     </div>
     <div class="footer-divider"></div>

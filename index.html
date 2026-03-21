@@ -586,7 +586,7 @@
       <span class="req-dish-name" id="req-dish-name"></span>
       <div class="req-form">
         <div><label>Your name</label><input type="text" id="req-name" placeholder="e.g. Sarah"/></div>
-        <div><label>Email <span style="font-size:0.75rem;color:var(--muted);font-weight:400">(optional)</span></label><input type="email" id="req-email" placeholder="e.g. sarah@email.com"/></div>
+        <div><label>Email</label><input type="email" id="req-email" placeholder="e.g. sarah@email.com"/></div>
         <div><label>Message (optional)</label><textarea id="req-note" rows="3" placeholder="Any notes or dietary preferences…"></textarea></div>
         <button class="req-submit" onclick="submitRequest()">Send Request</button>
       </div>
@@ -1114,6 +1114,7 @@ function openReq(id) {
   const item=items.find(i=>i.id===id);
   document.getElementById('req-dish-name').textContent=item?item.name:'';
   document.getElementById('req-name').value=currentProfile?currentProfile.name:'';
+  document.getElementById('req-email').value='';
   document.getElementById('req-note').value='';
   document.getElementById('req-form-wrap').style.display='block';
   document.getElementById('req-confirm').classList.remove('show');
@@ -1125,6 +1126,7 @@ async function submitRequest() {
   const name=document.getElementById('req-name').value.trim();
   if (!name) { showToast(t('errReqName')); return; }
   const email=document.getElementById('req-email').value.trim();
+  if (!email) { showToast(lang==='zh'?'请输入你的邮箱！':'Please enter your email!'); return; }
   const note=document.getElementById('req-note').value.trim();
   const item=items.find(i=>i.id===pendingRequestId);
   await sb.from('requests').insert([{
@@ -1603,7 +1605,7 @@ function openDetailPage(id) {
         <div class="dp-req-form" id="dp-req-form">
           <h4>${isZh?'请求食谱':'Request this recipe'}</h4>
           <input type="text" id="dp-req-name" placeholder="${isZh?'你的名字':'Your name'}" value="${currentProfile?currentProfile.name:''}"/>
-          <input type="email" id="dp-req-email" placeholder="${isZh?'邮箱（选填）':'Email (optional)'}"/>
+          <input type="email" id="dp-req-email" placeholder="${isZh?'邮箱':'Email'}"/>
           <textarea id="dp-req-note" rows="3" placeholder="${isZh?'有什么特别要求吗？':'Any notes or dietary preferences…'}"></textarea>
           <button class="dp-req-submit" onclick="dpSubmitReq(${item.id},'${safeItemName}')">
             ${isZh?'发送请求':'Send Request'}
@@ -1689,6 +1691,7 @@ async function dpSubmitReq(itemId, dishName) {
   const name = document.getElementById('dp-req-name').value.trim();
   if (!name) { showToast(t('errReqName')); return; }
   const email = document.getElementById('dp-req-email').value.trim();
+  if (!email) { showToast(isZh?'请输入你的邮箱！':'Please enter your email!'); return; }
   const note = document.getElementById('dp-req-note').value.trim();
   await sb.from('requests').insert([{profile_id:currentProfile?.id||null,guest_name:name,item_id:itemId,dish_name:dishName,note}]);
   const SHEET_URL='https://script.google.com/macros/s/AKfycby6FPef6FEz84HoXx90199NRFUYh-Rqs6ysU-l6VHUFzXrlPypg0XLICtyCzed1D2NITA/exec';

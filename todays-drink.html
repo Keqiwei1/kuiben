@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#0b0916"/>
+  <title>Today's Drink — Kuiben Kitchen &amp; Bar</title>
+  <meta name="description" content="What's pouring tonight at Kuiben — a rotating cocktail list."/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://atkuiben.com/todays-drink"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Caveat:wght@700&family=Noto+Sans+SC:wght@300&family=Sacramento&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:#0b0916;color:#fdf6ff;font-family:'Lato',sans-serif;min-height:100vh;}
+
+    /* ── shared top nav bar, matching about.html's header pattern ── */
+    header{background:linear-gradient(135deg,#4a6fa5 0%,#5b8dd9 50%,#7ba3e0 100%);padding:1.2rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+    .header-logo{font-family:'Caveat',cursive;font-size:2rem;color:#fff;position:relative;z-index:1;cursor:default;user-select:none;}
+    .header-nav{display:flex;align-items:center;gap:1.2rem;position:relative;z-index:1;}
+    .header-nav a{color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.85rem;font-family:'Lato',sans-serif;letter-spacing:0.05em;transition:color 0.2s;}
+    .header-nav a:hover{color:#fff;}
+    .header-nav a.active{color:#fff;font-weight:700;}
+    .lang-btn{background:none;border:none;color:rgba(255,255,255,0.5);font-family:'Lato',sans-serif;font-size:0.78rem;letter-spacing:0.05em;cursor:pointer;padding:0;transition:color 0.2s;}
+    .lang-btn:hover{color:rgba(255,255,255,0.85);}
+    .lang-btn.active{color:#fff;font-weight:700;}
+
+    /* ── neon page styles ── */
+    .td-title{font-family:'Playfair Display',Georgia,serif;text-shadow:0 0 6px rgba(255,46,196,0.85),0 0 20px rgba(255,46,196,0.5),0 0 44px rgba(178,107,255,0.4);}
+    .td-tab{background:none;border:none;cursor:pointer;font-family:'Work Sans',sans-serif;font-size:15px;padding:6px 2px;transition:text-shadow .25s ease,color .25s ease,transform .2s ease;}
+    .td-tab:hover{transform:translateY(-1px);}
+    .td-name{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:24px;transition:transform .25s ease;}
+    .td-block:hover .td-name{transform:scale(1.03) rotate(-0.5deg);}
+    .td-block:hover .td-img{transform:scale(1.05) rotate(-1deg);}
+    .td-block{transition:transform .2s ease-out;transform-origin:center center;will-change:transform;display:flex;align-items:center;gap:10px;}
+    .td-img{transition:transform .3s ease;width:180px;height:180px;object-fit:cover;border-radius:50% 45% 50% 48%;flex-shrink:0;}
+    .td-ingredients{font-family:'Sacramento',cursive;font-weight:400;font-size:26px;line-height:1.6;color:#d9c9ee;}
+    .td-spark{display:inline-block;animation:tdTwinkle 2.4s ease-in-out infinite;}
+    .td-spark.s2{animation-delay:.6s;}
+    @keyframes tdTwinkle{0%,100%{opacity:.4;transform:scale(.9);}50%{opacity:1;transform:scale(1.15);}}
+    .td-input{background:rgba(244,239,228,0.08);border:1px solid rgba(244,239,228,0.2);border-radius:10px;padding:10px 12px;color:#fdf6ff;font-size:14px;font-family:'Work Sans',sans-serif;width:100%;}
+    .td-input::placeholder{color:rgba(253,246,255,0.4);}
+    .td-btn{font-family:'Work Sans',sans-serif;cursor:pointer;}
+    @media (max-width:480px){
+      .td-block{flex-direction:column !important;align-items:flex-start !important;gap:14px !important;}
+      .td-img{width:150px !important;height:150px !important;}
+    }
+
+    /* ── footer, matching index.html ── */
+    footer{background:linear-gradient(135deg,#3a5f95,#4a6fa5);color:rgba(255,255,255,0.7);text-align:center;padding:2.5rem 1.5rem;}
+    .footer-inner{max-width:600px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:1.2rem;}
+    .footer-name{font-family:'Caveat',cursive;font-size:2rem;color:#fff;line-height:1;}
+    .footer-tagline{font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:0.82rem;letter-spacing:0.2em;color:rgba(255,255,255,0.55);}
+    .footer-copy{font-size:0.72rem;color:rgba(255,255,255,0.35);letter-spacing:0.08em;}
+
+    #toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a3e;color:#fdf6ff;padding:0.6rem 1.4rem;border-radius:100px;font-size:0.88rem;opacity:0;transition:opacity .3s,transform .3s;z-index:300;white-space:nowrap;pointer-events:none;}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="header-logo" id="kuiben-tap-target">Kuiben</span>
+  <nav class="header-nav">
+    <a href="/">Menu</a>
+    <a href="/about">About</a>
+    <a href="/todays-drink" class="active">Today's Drink</a>
+    <span style="color:rgba(255,255,255,0.25);font-size:0.7rem">|</span>
+    <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
+    <span style="color:rgba(255,255,255,0.25);font-size:0.7rem">/</span>
+    <button class="lang-btn" id="lang-zh" onclick="setLang('zh')">中文</button>
+  </nav>
+</header>
+
+<div style="background:#0b0916;min-height:100vh;padding:22px 0 50px">
+
+  <div style="max-width:720px;margin:0 auto;padding:0 24px;text-align:center">
+    <div style="font-size:12px;letter-spacing:0.3em;text-transform:uppercase;color:#2af5ff;margin-bottom:10px;text-shadow:0 0 8px rgba(42,245,255,0.7);font-family:'Work Sans',sans-serif">
+      <span class="td-spark">✦</span>&nbsp;<span id="td-subtitle">what's pouring tonight</span>&nbsp;<span class="td-spark s2">✦</span>
+    </div>
+    <h1 class="td-title" style="font-size:46px;font-weight:700;margin:0;color:#fdf6ff" id="td-title">Today's Drink</h1>
+  </div>
+
+  <div style="position:sticky;top:0;z-index:5;background:linear-gradient(#0b0916 78%,transparent);padding:28px 0 18px">
+    <div id="td-tabs" style="max-width:720px;margin:0 auto;padding:0 24px;display:flex;gap:22px;flex-wrap:wrap;justify-content:center"></div>
+  </div>
+
+  <div style="max-width:720px;margin:0 auto;padding:4px 60px 0;display:flex;flex-direction:column;gap:26px">
+    <div id="td-owner-controls"></div>
+    <div id="td-status" style="opacity:0.6;padding:20px 0;color:#cdbfe0;font-family:'Work Sans',sans-serif"></div>
+    <div id="td-list" style="display:flex;flex-direction:column;gap:26px"></div>
+    <div id="td-sentinel" style="height:1px"></div>
+    <div id="td-loading-more" style="text-align:center;padding:20px 0;color:#8f7fae;font-family:'Sacramento',cursive;font-size:22px;display:none"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-name">Kuiben</div>
+    <div class="footer-tagline">好好吃饭，好好生活</div>
+    <div class="footer-copy">© 2026 Kuiben Kitchen & Bar · atkuiben.com</div>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+// ── SUPABASE (same project as index.html) ──
+const SUPABASE_URL = 'https://srucjbmfdjmvtjfglnse.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNydWNqYm1mZGptdnRqZmdsbnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NTg4ODYsImV4cCI6MjA4OTAzNDg4Nn0.42GK8xLjxJnnciurNVvPBeVgXmzNJHAZc2vOqtSGZOo';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── SHARED SITE STATE (reuses the same keys as index.html) ──
+let lang    = localStorage.getItem('kuiben-lang') || 'en';
+let isOwner = sessionStorage.getItem('kuiben-owner') === 'true';
+
+const NEON = ["#ff2ec4", "#2af5ff", "#b26bff", "#ffd23f"];
+const PAGE_SIZE = 4;
+const LIQUOR_TYPES = [
+  { value: "whiskey", en: "Whiskey", zh: "威士忌" },
+  { value: "vodka", en: "Vodka", zh: "伏特加" },
+  { value: "rum", en: "Rum", zh: "朗姆酒" },
+  { value: "gin", en: "Gin", zh: "金酒" },
+  { value: "tequila", en: "Tequila", zh: "龙舌兰" },
+  { value: "brandy", en: "Brandy", zh: "白兰地" },
+  { value: "liqueurs", en: "Liqueurs", zh: "利口酒" },
+  { value: "beer", en: "Beer", zh: "啤酒" },
+  { value: "wine", en: "Wine", zh: "葡萄酒" },
+];
+const TABS = [{ value: "all", en: "All", zh: "全部" }, ...LIQUOR_TYPES];
+
+const copy = {
+  en: { subtitle: "what's pouring tonight", title: "Today's Drink", empty: "Bar's closed tonight — check back soon.",
+        ownerEmpty: "No drinks yet — add your first one below.", loadingMore: "loading more…", addDrink: "+ Add a drink",
+        onTonight: "On tonight", offMenu: "Off menu", edit: "Edit", delete: "Delete", save: "Save", saving: "Saving…",
+        cancel: "Cancel", newDrink: "New drink", editDrink: "Edit drink", namePh: "Name — e.g. Paper Plane",
+        ingPh: "Main ingredients, comma separated", noPhoto: "no photo", loading: "Loading…", needName: "Give the drink a name first." },
+  zh: { subtitle: "本周吧台精选", title: "今日特调", empty: "今天没有特调，敬请期待。",
+        ownerEmpty: "还没有添加饮品。", loadingMore: "加载更多…", addDrink: "+ 添加饮品",
+        onTonight: "今日供应", offMenu: "未上架", edit: "编辑", delete: "删除", save: "保存", saving: "保存中…",
+        cancel: "取消", newDrink: "新饮品", editDrink: "编辑饮品", namePh: "名称",
+        ingPh: "主要材料，逗号分隔", noPhoto: "暂无图片", loading: "加载中…", needName: "请填写名称" }
+};
+function t(key) { return copy[lang][key]; }
+
+// ── page state ──
+let activeType = "all";
+let drinks = [];
+let offset = 0;
+let hasMore = true;
+let loadingMore = false;
+let showForm = false;
+let editingId = null;
+let draft = { name: "", name_zh: "", ingredients: "", ingredients_zh: "", liquor_type: LIQUOR_TYPES[0].value };
+let photoFile = null;
+let photoPreviewUrl = null;
+
+// ── data ──
+async function fetchPage(pageOffset, type, isFirstPage) {
+  document.getElementById('td-status').textContent = isFirstPage ? t('loading') : '';
+  if (!isFirstPage) {
+    loadingMore = true;
+    const lm = document.getElementById('td-loading-more');
+    lm.textContent = '✦ ' + t('loadingMore') + ' ✦';
+    lm.style.display = 'block';
+  }
+
+  let query = sb.from('todays_drinks').select('*');
+  if (!isOwner) query = query.eq('available_today', true);
+  if (type !== 'all') query = query.eq('liquor_type', type);
+  query = query.order('sort_order', { ascending: true }).order('name', { ascending: true }).range(pageOffset, pageOffset + PAGE_SIZE - 1);
+
+  const { data, error } = await query;
+
+  if (error) {
+    document.getElementById('td-status').textContent = error.message;
+  } else {
+    drinks = isFirstPage ? data : drinks.concat(data);
+    hasMore = (data || []).length === PAGE_SIZE;
+    offset = pageOffset + (data || []).length;
+    document.getElementById('td-status').textContent =
+      (drinks.length === 0) ? (isOwner ? t('ownerEmpty') : t('empty')) : '';
+  }
+  loadingMore = false;
+  document.getElementById('td-loading-more').style.display = 'none';
+  renderList();
+  setTimeout(updateMagnify, 50);
+}
+
+function loadMore() {
+  if (loadingMore || !hasMore) return;
+  fetchPage(offset, activeType, false);
+}
+
+function resetAndLoad() {
+  drinks = []; offset = 0; hasMore = true;
+  fetchPage(0, activeType, true);
+}
+
+// ── infinite scroll ──
+const io = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) loadMore();
+}, { rootMargin: '400px' });
+io.observe(document.getElementById('td-sentinel'));
+
+// ── scroll magnify ──
+let magnifyTicking = false;
+function updateMagnify() {
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  const center = vh / 2;
+  document.querySelectorAll('.td-block').forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    const elCenter = rect.top + rect.height / 2;
+    const dist = Math.abs(elCenter - center);
+    const norm = Math.min(dist / (vh * 0.65), 1);
+    el.style.transform = `scale(${1.08 - norm * 0.16})`;
+  });
+}
+window.addEventListener('scroll', () => {
+  if (!magnifyTicking) {
+    window.requestAnimationFrame(() => { updateMagnify(); magnifyTicking = false; });
+    magnifyTicking = true;
+  }
+});
+window.addEventListener('resize', updateMagnify);
+
+// ── render ──
+function renderTabs() {
+  const wrap = document.getElementById('td-tabs');
+  wrap.innerHTML = TABS.map((tItem, i) => {
+    const active = activeType === tItem.value;
+    const color = NEON[i % NEON.length];
+    return `<button class="td-tab" style="color:${active?color:'rgba(255,255,255,0.4)'};text-shadow:${active?`0 0 6px ${color}, 0 0 16px ${color}88`:'none'}" onclick="selectTab('${tItem.value}')">${lang==='zh'?tItem.zh:tItem.en}</button>`;
+  }).join('');
+}
+
+function selectTab(value) {
+  activeType = value;
+  renderTabs();
+  resetAndLoad();
+}
+
+function renderOwnerControls() {
+  const wrap = document.getElementById('td-owner-controls');
+  if (!isOwner) { wrap.innerHTML = ''; return; }
+  if (!showForm) {
+    wrap.innerHTML = `<button class="td-btn" onclick="openAddForm()" style="align-self:flex-start;background:none;border:1px dashed rgba(255,255,255,0.3);border-radius:12px;padding:10px 18px;color:#fdf6ff;font-size:14px">${t('addDrink')}</button>`;
+    return;
+  }
+  wrap.innerHTML = `
+    <div style="background:rgba(244,239,228,0.05);border:1px solid rgba(244,239,228,0.15);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;opacity:0.5;color:#fdf6ff;font-family:'Work Sans',sans-serif">${editingId ? t('editDrink') : t('newDrink')}</div>
+      <input class="td-input" id="td-f-name" placeholder="${t('namePh')}" value="${escapeAttr(draft.name)}"/>
+      <input class="td-input" id="td-f-name-zh" placeholder="名字 (中文，可选)" value="${escapeAttr(draft.name_zh)}"/>
+      <input class="td-input" id="td-f-ing" placeholder="${t('ingPh')}" value="${escapeAttr(draft.ingredients)}"/>
+      <input class="td-input" id="td-f-ing-zh" placeholder="主要材料 (中文，可选)" value="${escapeAttr(draft.ingredients_zh)}"/>
+      <select class="td-input" id="td-f-type">
+        ${LIQUOR_TYPES.map(lt => `<option value="${lt.value}" ${draft.liquor_type===lt.value?'selected':''} style="color:#000">${lang==='zh'?lt.zh:lt.en}</option>`).join('')}
+      </select>
+      <div style="display:flex;align-items:center;gap:12px">
+        <input type="file" accept="image/*" id="td-f-photo" onchange="onPhotoSelected(event)" style="font-size:12px;color:#fdf6ff;flex:1;font-family:'Work Sans',sans-serif"/>
+        ${photoPreviewUrl ? `<img src="${photoPreviewUrl}" style="width:44px;height:44px;border-radius:8px;object-fit:cover"/>` : ''}
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="td-btn" onclick="saveDrink()" style="background:#ff2ec4;color:#1F2A24;border:none;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600">${t('save')}</button>
+        <button class="td-btn" onclick="closeForm()" style="background:none;border:1px solid rgba(244,239,228,0.25);color:#fdf6ff;border-radius:10px;padding:10px 18px;font-size:13px">${t('cancel')}</button>
+      </div>
+    </div>`;
+}
+
+function renderList() {
+  const listEl = document.getElementById('td-list');
+  listEl.innerHTML = drinks.map((d, i) => {
+    const accent = NEON[i % NEON.length];
+    const reverse = i % 2 === 1;
+    const tilt = i % 2 === 0 ? '-1.5deg' : '1.5deg';
+    const name = (lang === 'zh' && d.name_zh) ? d.name_zh : d.name;
+    const ing = (lang === 'zh' && d.ingredients_zh) ? d.ingredients_zh : (d.ingredients || '');
+    const img = d.photo_url
+      ? `<img class="td-img" src="${d.photo_url}" alt="${escapeAttr(d.name)}" style="transform:rotate(${tilt})"/>`
+      : `<div class="td-img" style="background:rgba(244,239,228,0.06);display:flex;align-items:center;justify-content:center;color:rgba(253,246,255,0.3);font-size:12px;font-family:'Work Sans',sans-serif">${t('noPhoto')}</div>`;
+    const ownerRow = isOwner ? `
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+        <button class="td-btn" onclick="toggleAvailable('${d.id}', ${d.available_today})" style="display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:999px;padding:6px 12px;font-size:12.5px;color:#fdf6ff">
+          <span style="width:30px;height:17px;border-radius:999px;position:relative;display:inline-block;background:${d.available_today?'#ff2ec4':'rgba(255,255,255,0.15)'};box-shadow:${d.available_today?'0 0 8px #ff2ec4':'none'}">
+            <span style="position:absolute;top:2px;left:${d.available_today?'15px':'2px'};width:13px;height:13px;border-radius:50%;background:#fff"></span>
+          </span>
+          ${d.available_today ? t('onTonight') : t('offMenu')}
+        </button>
+        <button class="td-btn" onclick='openEditForm(${JSON.stringify(d).replace(/'/g,"&apos;")})' style="background:none;border:1px solid rgba(255,255,255,0.15);border-radius:999px;padding:6px 12px;font-size:12.5px;color:#fdf6ff">${t('edit')}</button>
+        <button class="td-btn" onclick="deleteDrink('${d.id}')" style="background:none;border:1px solid rgba(255,46,196,0.35);border-radius:999px;padding:6px 12px;font-size:12.5px;color:#ff2ec4">${t('delete')}</button>
+      </div>` : '';
+    return `
+      <div class="td-block" style="flex-direction:${reverse ? 'row-reverse' : 'row'}">
+        ${img}
+        <div style="flex:1;min-width:0">
+          <div class="td-name" style="color:#fdf6ff;text-shadow:0 0 8px ${accent}cc, 0 0 24px ${accent}66">${escapeHtml(name)}</div>
+          <div class="td-ingredients" style="margin-top:10px">${escapeHtml(ing)}</div>
+          ${ownerRow}
+        </div>
+      </div>`;
+  }).join('');
+  updateMagnify();
+}
+
+function escapeHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(s) { return (s||'').replace(/"/g,'&quot;'); }
+
+// ── owner actions ──
+async function toggleAvailable(id, current) {
+  const idx = drinks.findIndex(d => d.id === id);
+  if (idx !== -1) { drinks[idx].available_today = !current; renderList(); }
+  const { error } = await sb.from('todays_drinks').update({ available_today: !current }).eq('id', id);
+  if (error) { showToast(error.message); if (idx !== -1) { drinks[idx].available_today = current; renderList(); } }
+}
+
+async function deleteDrink(id) {
+  const prev = drinks;
+  drinks = drinks.filter(d => d.id !== id);
+  renderList();
+  const { error } = await sb.from('todays_drinks').delete().eq('id', id);
+  if (error) { showToast(error.message); drinks = prev; renderList(); }
+}
+
+function openAddForm() {
+  editingId = null;
+  draft = { name: "", name_zh: "", ingredients: "", ingredients_zh: "", liquor_type: LIQUOR_TYPES[0].value };
+  photoFile = null; photoPreviewUrl = null;
+  showForm = true;
+  renderOwnerControls();
+}
+
+function openEditForm(d) {
+  editingId = d.id;
+  draft = { name: d.name||"", name_zh: d.name_zh||"", ingredients: d.ingredients||"", ingredients_zh: d.ingredients_zh||"", liquor_type: d.liquor_type||LIQUOR_TYPES[0].value };
+  photoFile = null; photoPreviewUrl = d.photo_url || null;
+  showForm = true;
+  renderOwnerControls();
+}
+
+function closeForm() { showForm = false; editingId = null; renderOwnerControls(); }
+
+function onPhotoSelected(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  photoFile = file;
+  photoPreviewUrl = URL.createObjectURL(file);
+  renderOwnerControls();
+}
+
+async function saveDrink() {
+  draft.name = document.getElementById('td-f-name').value.trim();
+  draft.name_zh = document.getElementById('td-f-name-zh').value.trim();
+  draft.ingredients = document.getElementById('td-f-ing').value.trim();
+  draft.ingredients_zh = document.getElementById('td-f-ing-zh').value.trim();
+  draft.liquor_type = document.getElementById('td-f-type').value;
+
+  if (!draft.name) { showToast(t('needName')); return; }
+
+  showToast(t('saving'));
+  let photo_url;
+
+  try {
+    if (photoFile) {
+      const ext = photoFile.name.split('.').pop();
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await sb.storage.from('todays-drinks').upload(path, photoFile);
+      if (upErr) throw upErr;
+      const { data: pub } = sb.storage.from('todays-drinks').getPublicUrl(path);
+      photo_url = pub.publicUrl;
+    }
+
+    const payload = {
+      name: draft.name, name_zh: draft.name_zh || null,
+      ingredients: draft.ingredients, ingredients_zh: draft.ingredients_zh || null,
+      liquor_type: draft.liquor_type,
+    };
+    if (photo_url !== undefined) payload.photo_url = photo_url;
+
+    if (editingId) {
+      const { error } = await sb.from('todays_drinks').update(payload).eq('id', editingId);
+      if (error) throw error;
+    } else {
+      payload.available_today = true;
+      const { error } = await sb.from('todays_drinks').insert(payload);
+      if (error) throw error;
+    }
+
+    showForm = false; editingId = null; photoFile = null; photoPreviewUrl = null;
+    renderOwnerControls();
+    resetAndLoad();
+    showToast('✓');
+  } catch (err) {
+    showToast(err.message || String(err));
+  }
+}
+
+// ── toast ──
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ── owner-mode tap (same mechanism/key as index.html) ──
+let tapCount = 0, tapTimer = null;
+document.getElementById('kuiben-tap-target').addEventListener('click', () => {
+  tapCount++;
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+  if (tapCount >= 5) {
+    tapCount = 0;
+    isOwner = !isOwner;
+    sessionStorage.setItem('kuiben-owner', isOwner ? 'true' : 'false');
+    showToast(isOwner ? (lang==='zh'?'主人模式 已开启':'Owner mode on') : (lang==='zh'?'主人模式 已关闭':'Owner mode off'));
+    renderOwnerControls();
+    resetAndLoad();
+  }
+});
+
+// ── language (shares localStorage key with index.html) ──
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('kuiben-lang', l);
+  applyLang();
+  renderTabs();
+  renderOwnerControls();
+  renderList();
+}
+function applyLang() {
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('td-subtitle').textContent = t('subtitle');
+  document.getElementById('td-title').textContent = t('title');
+}
+
+// ── init ──
+applyLang();
+renderTabs();
+renderOwnerControls();
+resetAndLoad();
+</script>
+</body>
+</html>
